@@ -110,7 +110,10 @@ class Desktop:
         self.allWidgets = {}
         del Desktop.theDesktop
         Desktop.theDesktop = None
-        self.renderer.quit()
+        if self.renderer:
+            self.renderer.quit()
+        self.renderer = None
+
 
     def update(self):
         """Called constantly by the application to process PyUI events and scheduled callbacks.

@@ -119,4 +119,34 @@ class OpenGLPygame(openglBase.OpenGLBase):
     def quit(self):
         pygame.quit()          
         
+    def loadTexture(self, filename, label = None):
+        """This loads images without using P.I.L! Yay.
+        """
+        if label:
+            if self.textures.has_key(label):
+                return
+        else:
+            if self.textures.has_key(filename):
+                return
 
+        surface = pygame.image.load(filename)
+        data = pygame.image.tostring(surface, "RGBA", 1)
+        ix = surface.get_width()
+        iy = surface.get_height()
+        
+        # Create Texture
+        texture = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, texture)   # 2d texture (x and y size)
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+
+        if label:
+            self.textures[label] = texture
+        else:
+            self.textures[filename] = texture
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)

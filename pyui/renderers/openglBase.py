@@ -47,10 +47,6 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
 from OpenGL.WGL import wglUseFontBitmaps, wglGetCurrentDC
-try:
-    from PIL.Image import *
-except:
-    print "Unable to find Python Imaging Library!"
 
 ######################################################
 ## Utility functions
@@ -361,47 +357,8 @@ class OpenGLBase(Renderer3DBase):
         return (self.width, self.height)
 
     def loadTexture(self, filename, label = None):
-        if label:
-            if self.textures.has_key(label):
-                return
-        else:
-            if self.textures.has_key(filename):
-                return
-
-        image = open(filename)
-        ix = image.size[0]
-        iy = image.size[1]
-        seq = 0
-        for mode, seq in [('RGBA', 4), ('RGBX', 4), ('RGB', 3)]:
-            try:
-                image = image.tostring("raw", mode, 0, -1)
-            except (IOError, SystemError):
-                print "Unable to load %s with encoder %s" % (filename, mode)
-                failed = 1
-            else:
-                failed = 0
-                break
-        if failed:
-            raise IOError("All three encoders failed.")
-        
-        #Create Texture
-        texture = glGenTextures(1)
-        glBindTexture(GL_TEXTURE_2D, texture)   # 2d texture (x and y size)
-        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-        glTexImage2D(GL_TEXTURE_2D, 0, seq, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
-
-        print "Loaded: %s as %d" % ( filename, texture)
-        if label:
-            self.textures[label] = texture
-        else:
-            self.textures[filename] = texture
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-
+        pass
+    
     def setWindowOrigin(self, winX, winY ):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()

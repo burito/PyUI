@@ -33,7 +33,7 @@ from renderer3d import Renderer3DBase
 
 gRenderer = None
 gDesktop = None
-gVersion = 0.93
+gVersion = 0.95
 
 #########################################################
 # Section: external/public functions
@@ -41,7 +41,7 @@ gVersion = 0.93
 # External/Public Module level functions
 #########################################################
 
-def init(w, h, renderer = "gl", fullscreen = 0, title=""):
+def init(w, h, renderer = "p3d", fullscreen = 0, title=""):
     """Initialize pyui. Will set to fullscreen if specified. default is to run in a window.
     This will return a Desktop Object.
     (public)

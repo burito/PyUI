@@ -31,12 +31,19 @@ class RendererNeb(rendererBase.RendererBase):
         set('/sys/servers/gfx.opendisplay')
 
         set('/sys/servers/input.beginmap')
-        set('/sys/servers/input.map', 'mouse0:btn1.down', 'script:mouse1down()')
-        set('/sys/servers/input.map', 'mouse0:btn1.up',  'script:mouse1up()')
-        set('/sys/servers/input.map', 'mouse0:btn2.pressed', 'script:print "clunk!"')
+        set('/sys/servers/input.map', 'mouse0:btn0.down', 'script:mouse0down()')
+        set('/sys/servers/input.map', 'mouse0:btn0.up',  'script:mouse0up()')
+
+        set('/sys/servers/input.map', 'mouse1:btn1.down', 'script:mouse1down()')
+        set('/sys/servers/input.map', 'mouse1:btn1.up',  'script:mouse1up()')
+
+        set('/sys/servers/input.map', 'mouse0:btn1.pressed', 'script:print "clunk!"')
         set('/sys/servers/input.map', 'keyb0:space.down', "script:orig()")
         set('/sys/servers/input.map', 'keyb0:esc.down',"script:set('/sys/servers/console.toggle')")
 
+        #setup more keys
+        set('/sys/servers/input.map', 'keyb0:return.down',"script:onReturnDown")
+        
         set('/sys/servers/input.endmap')
 
         new('n3dnode','/usr/scene')
@@ -67,6 +74,8 @@ class RendererNeb(rendererBase.RendererBase):
         # evil, but hey! i could have done this the hard way
 
         npython.mouseMotion =  self.mouseMotion
+        __builtins__['mouse0down'] = self.mouse0down
+        __builtins__['mouse0up'] = self.mouse0up
         __builtins__['mouse1down'] = self.mouse1down
         __builtins__['mouse1up'] = self.mouse1up
 
@@ -86,7 +95,7 @@ class RendererNeb(rendererBase.RendererBase):
         set('.setambient', 0.000000, 0.000000, 0.000000, 0.000000)
         set('.setlightenable', 0)
         set('.setalphaenable', 1)
-        set('.setzwriteenable', 0)
+        set( '.setzwriteenable', 0)
         set('.setfogenable', 1)
         set('.setalphablend', "srcalpha", "invsrcalpha")
         set('.setzfunc', "always")
@@ -110,11 +119,18 @@ class RendererNeb(rendererBase.RendererBase):
         self.mouseY = y
 
     def mouse1down(self):
-        pyui.desktop.getDesktop().postUserEvent(pyui.locals.LMOUSEBUTTONDOWN, self.mouseX, self.mouseY)
+        pyui.desktop.getDesktop().postUserEvent(pyui.locals.RMOUSEBUTTONDOWN, self.mouseX, self.mouseY)
 
     def mouse1up(self):
+        pyui.desktop.getDesktop().postUserEvent(pyui.locals.RMOUSEBUTTONUP, self.mouseX, self.mouseY)
+
+    def mouse0down(self):
+        pyui.desktop.getDesktop().postUserEvent(pyui.locals.LMOUSEBUTTONDOWN, self.mouseX, self.mouseY)
+
+    def mouse0up(self):
         pyui.desktop.getDesktop().postUserEvent(pyui.locals.LMOUSEBUTTONUP, self.mouseX, self.mouseY)
 
+        
     def clear(self):
         #TODO: make a clear method
         pass
@@ -177,7 +193,7 @@ class RendererNeb(rendererBase.RendererBase):
 
     def doText(self, text, (x,y), (r,g,b,a), font, windowPos):
         x = x + windowPos[0]
-        y = y + windowPos[1]
+        y = y + windowPos[1] -4
         x1,y1 = (x/self.w* 2)-1, 1-(2*y/self.h)
         #print 'doText', text,x1,-y1,r,g,b,a
         #this assumes the coord given is the top right corner
@@ -231,3 +247,6 @@ class RendererNeb(rendererBase.RendererBase):
         setTrigger(lambda: (desktop.getDesktop().draw(),desktop.getDesktop().update()))
         set("/sys/servers/input.setmousecallback", "mouseMotion")
         set('/observer.start')
+
+    def getTextSize(self, text, font = None):
+        return (len(text) * 8, 18)
