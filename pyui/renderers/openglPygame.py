@@ -19,7 +19,6 @@
 
 import sys
 import time
-import freetype
 
 import pyui
 import pygame
@@ -47,7 +46,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
 
         pygame.key.set_mods(locals.KMOD_NONE)
         pygame.mouse.set_visible(0)
-        self.ft = freetype.FreeType()
+        self.defaultFont = GLFont("times new roman", 12, 0)
 
     def draw(self, windows):
         apply(self.drawBackMethod, self.drawBackArgs)        
@@ -141,7 +140,6 @@ class OpenGLPygame(openglBase.OpenGLBase):
         except:
             surface = pygame.image.load(  pyui.__path__[0] + "/images/" + filename )
         data = pygame.image.tostring(surface, "RGBA", 1)
-        #print "IMAGE:", data
         ix = surface.get_width()
         iy = surface.get_height()
         
@@ -161,87 +159,209 @@ class OpenGLPygame(openglBase.OpenGLBase):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
 
-    #### freetype experiment gone wrong
-##    def drawText(self, text, pos, color, font=None):
-##        t = self.ft.render(text)
-##        ddata = t.img.tostring()
-##        ix = t.width
-##        iy = t.height
-##        print ix, iy
-##        print len(ddata), ddata
-##        # Create Texture
-##        texture = glGenTextures(1)
-##        glBindTexture(GL_TEXTURE_2D, texture)   # 2d texture (x and y size)
-##        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-##        glTexImage2D(GL_TEXTURE_2D, 0, 4, 64, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, ddata)
 
-##        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
-##        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-##        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    def drawText(self, text, pos, color, font=None):
+        t = self.ft.render(text)
+        ddata = t.img.tostring()
+        ix = t.width
+        iy = t.height
+        # Create Texture
+        texture = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, texture)   # 2d texture (x and y size)
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, 64, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, ddata)
+
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
 
-##        glColor4ub( 255, 255, 255, 255 )
-##        glEnable(GL_TEXTURE_2D)
-##        glBindTexture( GL_TEXTURE_2D, texture)
+        glColor4ub( 255, 255, 255, 255 )
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture( GL_TEXTURE_2D, texture)
 
-##        textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
+        textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
         
-##        glBegin(GL_QUADS)
-##        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
-##        glVertex2i( pos[0], pos[1] )
-##        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
-##        glVertex2i( pos[0] + ix, pos[1])
-##        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
-##        glVertex2i( pos[0] + ix, pos[1] + iy)
-##        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
-##        glVertex2i( pos[0], pos[1] + iy)
-##        glEnd()
+        glBegin(GL_QUADS)
+        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
+        glVertex2i( pos[0], pos[1] )
+        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
+        glVertex2i( pos[0] + ix, pos[1])
+        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
+        glVertex2i( pos[0] + ix, pos[1] + iy)
+        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
+        glVertex2i( pos[0], pos[1] + iy)
+        glEnd()
+
+    def createFont(self, face, size, flags):
+        newFont = GLFont(face, size, flags)
+        return newFont
+
+    def drawText(self, text, pos, color, font = None):
+        if not font:
+            font = self.defaultFont
+        font.drawText(text, pos, color)
+
+    def getTextSize(self, text, font = None):
+        if not font:
+            font = self.defaultFont
+        return font.getTextSize(text)
+    
+class GLFont:
+    def __init__(self, faceFile, size, flags):
+        self.faceFile = faceFile
+        self.size = size
+        self.flags = flags
+        print "Creating font:", faceFile
+        if fontRegistery.has_key(faceFile):
+            faceFile = "c:/WINNT/Fonts/" + fontRegistery[faceFile]
+        self.font = pygame.font.Font(faceFile, size*1.6)
+            
+        self.charInfo = []  # tuples of (width, height, texture coordinates) for each character
+        self.textCache = {}
+        self.createGlyphs()
+
+    def createGlyphs(self):
+        testSurface = self.font.render("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRTSUTWXYZ", 1, (255,255,255,255))
+        charWidth = testSurface.get_width()
+        charHeight = testSurface.get_height()
+        charSurfaces = []
+
+        # create the character surfaces
+        totalWidth = 0
+        for i in range(0,128):
+            try:
+                charSurface = self.font.render( chr(i), 1, (255,255,255,255))
+            except:
+                charSurfaces.append( None )
+            else:
+                charSurfaces.append(charSurface)
+                totalWidth += charSurface.get_width()
+
+        # TODO: calculate this properly
+        if totalWidth > 1300:
+            SZ = 512
+        else:
+            SZ = 256
+        totalWidth = SZ
+        totalHeight = SZ
         
-##    def createFont(self, face, size, flags):
-##        newFont = pygame.font.Font(None, size)
-##        self.fonts[newFont] = (face, size, flags)
-##        print "Created font", newFont, face, size                
-##        return newFont
+        # pack the surfaces into a single texture
+        x = pygame.surface.Surface((totalWidth, totalHeight),
+                                   flags=pygame.HWSURFACE |pygame.SRCALPHA,
+                                   depth=32,
+                                   masks=(0,0,0,0))
+        self.packedSurface = x.convert_alpha()
+        self.packedSurface.fill((0,0,0,0))
+        positionX = 0
+        positionY = 0
+        c = 0
+        for charSurf in charSurfaces:
+            if not charSurf:
+                self.charInfo.append( (0,0, (0,0,0,0)) )
+                continue
 
-##    def drawText(self, text, pos, color, font = None):
-##        if not font:
-##            font = pyui.desktop.getTheme().defaultFont
+            if positionX + charSurf.get_width() > SZ:
+                positionX = 0
+                positionY += charSurf.get_height()
+                
+            self.packedSurface.blit(charSurf, (positionX, positionY) )
+            
+            # calculate texture coords
+            left = positionX/(float)(totalWidth)
+            top = 1- positionY/(float)(totalHeight)            
+            right = (positionX+charSurf.get_width()) / (float)(totalWidth)
+            bottom = 1 - ((positionY+charSurf.get_height()) / (float)(totalHeight))
+            texCoords = (left, top, right, bottom)
 
-##        # create surface
-##        surface = font.render(text, 1, color)
-##        data = pygame.image.tostring(surface, "RGBA", 1)
-##        ix = surface.get_width()
-##        iy = surface.get_height()
+            self.charInfo.append( (charSurf.get_width(), charSurf.get_height(), texCoords) )
+            positionX += charSurf.get_width()
+            c += 1
 
-##        texture = 77
-##        print ix, iy, surface, text, texture
-##        # create openGL texture
-##        texture = glGenTextures(1)
-##        glBindTexture(GL_TEXTURE_2D, texture)
-##        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-##        print ix, iy, surface, text, texture        
-##        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+        # create GL texture from surface
+        self.texture = glGenTextures(1)
+        data = pygame.image.tostring(self.packedSurface, "RGBA", 1)        
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+        #print "w: %s h: %d"  %( totalWidth, totalHeight)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, totalWidth, totalHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+        
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+        # create display lists for each of the characters
+        self.displayLists = []
+        for (width, height, coords) in self.charInfo:
+            if not width and not height:
+                self.displayLists.append(0)
+                continue
+            newList = glGenLists(1)
+            glNewList(newList, GL_COMPILE)
+            glBegin(GL_QUADS)
+            glTexCoord2f(coords[0], coords[1])
+            glVertex2i(0, 0)
+            glTexCoord2f(coords[2], coords[1])
+            glVertex2i(width, 0)
+            glTexCoord2f(coords[2], coords[3])
+            glVertex2i(width, height)
+            glTexCoord2f(coords[0], coords[3])
+            glVertex2i(0, height)
+            glEnd()
+            glEndList()
+            self.displayLists.append(newList)
+
+    def drawText(self, text, pos, color):
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+        glColorub(color)
+        xPos = pos[0]
+        yPos = pos[1]-5
+        glPushMatrix()
+        glTranslate(xPos,yPos,0)
+        for c in text:
+            width = self.charInfo[ord(c)][0]
+            glCallList( self.displayLists[ord(c)])
+            glTranslate(width,0,0)
+        glPopMatrix()                            
+        glDisable(GL_TEXTURE_2D)
+
+    def cacheText(self, text):
+        #glPushMatrix()
+        #glTranslate(xPos,yPos,0)
+        if not self.textCache.has_key(text):
+            foo = glGenLists(1)
+            print "foo = ", foo
+            glNewList(foo, GL_COMPILE)
+            glPushMatrix()            
+
+            for c in text:
+                width = self.charInfo[ord(c)][0]
+                glCallList( self.displayLists[ord(c)])
+                glTranslate(width,0,0)
+            glPopMatrix()                            
+            glEndList()
+            self.textCache[text] = newList
 
         
-##        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
-##        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-##        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-
-##        # draw the texture
-##        glEnable(GL_TEXTURE_2D)
-##        glBindTexture( GL_TEXTURE_2D, texture)
-
-##        glBegin(GL_QUADS)
-##        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
-##        glVertex2i( rect[0], rect[1])
-##        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
-##        glVertex2i( rect[0] + rect[2], rect[1])
-##        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
-##        glVertex2i( rect[0] + rect[2], rect[1] + rect[3])
-##        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
-##        glVertex2i( rect[0], rect[1] + rect[3])
-##        glEnd()
-##        glDisable(GL_TEXTURE_2D)
+    def getTextSize(self, text):
+        w = 0
+        h = 0
+        for c in text:
+            (width, height, coords) = self.charInfo[ord(c)]
+            w += width
+            h = max(height,h)
+        #print "getTextSize: <%s> <%d,%d>" %(text, w, h)
+        return (w,h/1.4)
         
-##        # delete the texture
-##        glDeleteTextures(texture)
+
+fontRegistery = {
+    "comic sans ms":"comic.ttf",
+    "courier new":"cour.ttf",
+    "courier":"cour.ttf",    
+    "impact":"impact.ttf",
+    "microsoft sans serif":"micross.ttf",
+    "times new roman":"times.ttf",
+    "times":"times.ttf"
+    }
+    

@@ -118,11 +118,11 @@ class Win2kTheme(ThemeBase):
         if not font:
             font=self.defaultFont
 
-        print "button draw: getting text size:", title, font
+        #print "button draw: getting text size:", title, font
         
         size = self.renderer.getTextSize(title, font)
 
-        print "button draw:", title, size
+        #print "button draw:", title, size
         
         if shadow:
             self.renderer.drawText( title, (x + (w-size[0])/2+shadow, y + (h-size[1])/2+shadow), pyui.colors.black, font)            

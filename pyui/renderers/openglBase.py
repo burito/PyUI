@@ -128,12 +128,12 @@ class OpenGLBase(Renderer3DBase):
             103: pyui.locals.K_DOWN
             }
 
-        if not USE_TRUETYPE_FONTS or sys.platform != "win32":
-            print "Using GLUT fonts"
-            self.createFont = self.createFont_OLD
-            self.getTextSize = self.getTextSize_OLD
-        else:
-            print "Using True-Type fonts"
+##        if not USE_TRUETYPE_FONTS or sys.platform != "win32":
+##            print "Using GLUT fonts"
+##            self.createFont = self.createFont_OLD
+##            self.getTextSize = self.getTextSize_OLD
+##        else:
+##            print "Using True-Type fonts"
 
         self.drawBackMethod = self.clear
         
