@@ -14,14 +14,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# system imports
 import sys
-import time
-import pyui.locals
-#from pyui.themes import comic, future, green, win2k
-
-import colors
 import string
 import os
+
+# library imports
+import pyui.locals
+import colors
 
 from desktop import Desktop, readTimer
 

@@ -16,7 +16,7 @@
 
 """PyGame openGL renderer
 """
-
+import os
 import pyui
 import pygame
 from pyui.renderers import openglBase
@@ -180,7 +180,7 @@ class GLFont:
         self.flags = flags
         print "Creating font:", faceFile
         if fontRegistery.has_key(faceFile):
-            faceFile = "c:/WINNT/Fonts/" + fontRegistery[faceFile]
+            faceFile = os.environ['WINDIR'] + "/Fonts/" + fontRegistery[faceFile]
         self.font = pygame.font.Font(faceFile, size*1.3)
             
         self.charInfo = []  # tuples of (width, height, texture coordinates) for each character

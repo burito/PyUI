@@ -2,7 +2,7 @@
 from distutils.core import setup
 
 setup(name="PyUI",
-      version="0.95",
+      version="0.96",
       description="Python User Interface Library",
       author="Sean Riley",
       author_email="sean@twistedmatrix.com",
