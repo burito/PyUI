@@ -108,10 +108,10 @@ class ThemeBase:
         """Draw a 3D rectangle
         """
         (r,g,b,a) = self.renderer.unpackColor(color)
-        #a=255
+        a=255
 
-        colorLo = self.renderer.packColor(r/2, g/2, b/2, a)
-        colorHi = self.renderer.packColor(128 + r/2, 128 + g/2, 128 + b/2, a)
+        colorLo = self.renderer.packColor(0,0,0,255)
+        colorHi = self.renderer.packColor(255- r/4, 255-g/4, 255-b/4, a)
 
         if reverse:
             (colorLo, colorHi) = (colorHi, colorLo)
@@ -119,7 +119,7 @@ class ThemeBase:
         (x,y,w,h) = rect
         if w < 2 or h < 2:
             return
-        
+
         self.renderer.drawRect( colorHi, (x, y, w-thick, thick) )
         self.renderer.drawRect( colorHi, (x, y+thick, thick, h-thick) )
         if w > 2 and h > 2:

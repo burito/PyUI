@@ -813,18 +813,13 @@ class ListBox(Base):
             i = 0
             for item in self.items:
                 if i >= self.topItem and i < self.topItem + self.numVisible:
-                    if i == self.selected:
-                        getTheme().drawListBoxItem( (self.windowRect[0]+1,
-                                                     self.windowRect[1]+2 + (i-self.topItem) * renderer.getTextSize("x")[1],
-                                                     self.width - getTheme().getScrollerSize(),
-                                                     (getRenderer().getTextSize("x")[1] )-2 ),
-                                                    item.name, 1, item.color)
-                    else:
-                        getTheme().drawListBoxItem( (self.windowRect[0]+1,
-                                                     self.windowRect[1]+2 + (i-self.topItem) * getTheme().defaultTextHeight,
-                                                     self.width - getTheme().getScrollerSize(),
-                                                     ( getRenderer().getTextSize("x")[1] )-2),                                                     
-                                                    item.name, 0, item.color)                    
+                    selected = (i == self.selected)
+                    h = getRenderer().getTextSize("x")[1]
+                    getTheme().drawListBoxItem( (self.windowRect[0]+1,
+                                                 self.windowRect[1]+2 + (i-self.topItem) * h,
+                                                 self.width - getTheme().getScrollerSize(),
+                                                 ( getRenderer().getTextSize("x")[1] )-2),                                                     
+                                                item.name, selected, item.color)                    
                 i = i + 1
             self.vscroll.draw(renderer)
         

@@ -46,7 +46,6 @@ class OpenGLPygame(openglBase.OpenGLBase):
 
         pygame.key.set_mods(locals.KMOD_NONE)
         pygame.mouse.set_visible(0)
-        
 
     def draw(self, windows):
         apply(self.drawBackMethod, self.drawBackArgs)        
