@@ -275,3 +275,8 @@ class Pygame2D(pyui.core.RendererBase):
 
     def getTextSize(self, text, font = None):
         return self.font.size(text)
+
+    def getImageSize(self, filename):
+        if not self.images.has_key(filename):
+            self.loadImage(filename)
+        return self.images[filename].get_size()

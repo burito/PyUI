@@ -30,6 +30,8 @@ import pyui
 from pyui.desktop import getDesktop, getTheme, getRenderer
 
 from pyui.base import Base, Panel, Window
+from pyui.layouts import Much
+
 
 class Label(Base):
     """Label object has a text label. uses default font if font is not specified.
@@ -50,6 +52,16 @@ class Label(Base):
             self.color = self.fgColor
         self.setText(text)
 
+    def getPreferredSize(self):
+        if self.font:
+            font = self.font
+        else:
+            font = getTheme().defaultFont
+
+        return getRenderer().getTextSize(self.text, font)
+    
+    getMaximumSize = getPreferredSize
+        
     def draw(self, renderer):
         if self.show:
             getTheme().drawLabel(self.windowRect, self.text, color=self.color, font=self.font, shadow=self.shadow, align=self.align)
@@ -89,6 +101,11 @@ class Picture(Base):
     def setRotation(self, irotationDeg):
         self.irotationDegrees = irotationDeg
 
+    def getPreferredSize(self):
+        size = getRenderer().getImageSize(self.filename)
+        return size
+    getMaximumSize = getPreferredSize
+  
     def draw(self, renderer):
         if self.show and self.filename:
             renderer.drawImage(self.windowRect, self.filename, self.pieceRect)
@@ -136,6 +153,20 @@ class Button(Base):
         if self.show:
             getTheme().drawButton(self.windowRect, self.text, self.hasFocus(), self.status, self.enabled, self.font,
                                   self.shadow, self.fgColor, self.bgColor, self.roColor)
+
+    def getPreferredSize(self):
+        if self.font:
+            font = self.font
+        else:
+            font = getTheme().defaultFont
+
+        size = getRenderer().getTextSize("  "+self.text+"  ", font)
+        size = size[0], int(size[1] * 1.5)
+        return size
+
+    def getMaximumSize(self):
+        return Much, self.getPreferredSize()[1]
+
         
     def setText(self, text, dontResize=0):
         """Pass 1 to dontResize if you dont want the button to resize itself to the
@@ -146,14 +177,8 @@ class Button(Base):
             text = " "
 
         if not dontResize:
-            # FIXME: ARG! this break size of layed-out buttons...
-            if self.font:
-                font = self.font
-            else:
-                font = getTheme().defaultFont
-
-            size = getRenderer().getTextSize("  "+text+"  ", font)
-            self.resize(size[0], int(size[1] * 1.5))
+            width, height = self.getPreferredSize()
+            self.resize(width, height)
 
     def getText(self):
         return self.text
@@ -264,7 +289,7 @@ class Edit(Base):
     """
     canTab = 1     
     widgetLabel = "Edit"       
-    def __init__(self,text, max, handler):
+    def __init__(self,text, max, handler = None, readOnly = 0):
         Base.__init__(self)
         self.handler = handler
         self.caretPos = None
@@ -272,6 +297,7 @@ class Edit(Base):
         self.setText(text)        
         self.dragging = 0
         self.max = max
+        self.readOnly = readOnly
         self.resize(self.width, int(getRenderer().getTextSize("x")[1] * 1.5) )
         #print "Edit widget sized to", self.width, self.height
         self.registerEvent(pyui.locals.KEYDOWN, self._pyuiKeyDown)
@@ -280,6 +306,13 @@ class Edit(Base):
         self.registerEvent(pyui.locals.LMOUSEBUTTONUP, self._pyuiMouseUp)
         self.registerEvent(pyui.locals.MOUSEMOVE, self._pyuiMouseMotion)
         self.registerEvent(pyui.locals.CLICKED, self._pyuiClicked)
+
+    def getPreferredSize(self):
+        size = getRenderer().getTextSize("W" * self.max)
+        return size[0], int(size[1] * 1.5)
+
+    def getMaximumSize(self):
+        return Much, self.getPreferredSize()[1]
 
     def draw(self, renderer):
         getTheme().drawEdit(self.windowRect,self.text, self.hasFocus(), self.caretPos, self.selectPos) 
@@ -417,6 +450,10 @@ class Edit(Base):
             self.setDirty()
             return 1
 
+        # do not allow modification if edit is read-only
+        if self.readOnly:
+            return 0
+
         if event.key == pyui.locals.K_BACKSPACE:
             if self.selectPos != self.caretPos:
                 self.deleteSelected()
@@ -457,6 +494,10 @@ class Edit(Base):
         if not self.hasFocus():
             return 0
 
+        # do not allow modification if edit is read-only
+        if self.readOnly:
+            return 0
+        
         if ord(event.key) < 32 or ord(event.key) > 128:
             return 0
 

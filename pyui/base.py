@@ -107,6 +107,17 @@ class Base:
         for child in self.children:
             child.calcSize()
 
+    def getPreferredSize(self):
+        """Determine the recommended size for this widget.
+        This size should never be the value 'Much'.
+        """
+        return (self.width, self.height)
+
+    def getMaximumSize(self):
+        """Determine the recommended maximum size for this widget
+        """
+        return (layouts.Much, layouts.Much)
+
     def addChild(self, child):
         """Add a child widget.
         """

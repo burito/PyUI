@@ -14,6 +14,26 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
+#Much is used in computing layouts. It specifies that a widget should be as big as possible.
+class __much:
+    def __str__(self):
+        return "Much"
+    __repr__ = __str__
+    def __gt__(self, other):
+        if other is Much: return 0
+        else: return 1
+    def __lt__(self, other):
+        return 0
+    def __ge__(self, other):
+        return 1
+    def __le__(self, other):
+        if other is Much: return 1
+        else: return 0
+Much = __much()
+del __much
+
+
 class LayoutManager:
     """base class for all layout managers
     """
