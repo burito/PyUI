@@ -24,11 +24,20 @@ TEXTURE_ROTATE_270 = 3
 TEXTURE_MIRROR_H = 4
 TEXTURE_MIRROR_V = 5
 
+USE_TRUETYPE_FONTS = 0
+
 import sys
 import time
 
 import pyui
-import win32ui
+
+if USE_TRUETYPE_FONTS:
+    try:
+        import win32ui
+    except:
+        print "UNABLE TO IMPORT win32ui. Using GLUT text renderering"
+        USE_TRUETYPE_FONTS = 0
+    
 
 from pyui.renderer3d import Renderer3DBase
 from pyui.desktop import getDesktop
@@ -120,7 +129,15 @@ class OpenGLBase(Renderer3DBase):
             102: pyui.locals.K_RIGHT,
             103: pyui.locals.K_DOWN
             }
-    
+
+        if not USE_TRUETYPE_FONTS or sys.platform != "win32":
+            print "Using GLUT fonts"
+            self.createFont = self.createFont_OLD
+            self.getTextSize = self.getTextSize_OLD
+            self.do_text = self.do_text_OLD
+        else:
+            print "Using True-Type fonts"
+            
     ###############################################################################
     ### Draw Primatives functions
     ###############################################################################
@@ -414,7 +431,6 @@ class OpenGLBase(Renderer3DBase):
         (name, size, flags) = self.fonts[font]
         return (size*len(text), (int)(size*1.4) )
 
-
     def createFont(self, fontName, fontSize, flags):
         """Create a font. returns a handle. NOTE: This wont work on LINUX!!!!
         """
@@ -447,35 +463,30 @@ class OpenGLBase(Renderer3DBase):
         return handle
 
 
-    def do_imagefast(self, rects, filename):
+    def createFont_OLD(self, fontName, fontSize, flags):
+        pass
+    
+    def getTextSize_OLD(self, text, font = None):
+        """This text method uses the old GLUT rendering instead of True Type fonts.
+        """
+        if font == 'fixed':
+            return ( 8 * len( text ), 13 )        
+        w = 0
+        for c in text:
+            w += glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, ord(c))
+        return (w, pyui.locals.TEXT_HEIGHT)
 
-        textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
 
-        if not self.textures.has_key(filename):
-            self.loadTexture(filename)
 
-        texture = self.textures[filename]
+    def do_text_OLD(self, text, position, color, font ):
+        """This text method uses the old GLUT rendering instead of True Type fonts.
+        """
+        glColor4ub( color[0], color[1], color[2], color[3] )
+        glRasterPos2f(position[0], position[1]+13)
+        if font == 'fixed':
+            font = GLUT_BITMAP_8_BY_13
+        else:
+            font = GLUT_BITMAP_HELVETICA_12
+        for char in text:
+            glutBitmapCharacter(font, ord(char))
 
-        glEnable(GL_TEXTURE_2D)
-        glBindTexture( GL_TEXTURE_2D, texture)
-
-        halfwidth = rect[2] / 2
-        halfheight = rect[3] / 2
-
-        glPushMatrix()
-        glTranslate(rect[0] + (halfwidth), rect[1] + (halfheight), 0.0)
-
-        glBegin(GL_QUADS)
-        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
-        glVertex2i( -halfwidth, -halfheight)        
-        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
-        glVertex2i( halfwidth, -halfheight)
-        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
-        glVertex2i( halfwidth, halfheight)
-        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
-        glVertex2i( -halfwidth, halfheight)
-
-        glEnd()
-        glPopMatrix()
-
-        glDisable(GL_TEXTURE_2D)
