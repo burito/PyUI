@@ -25,6 +25,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
+
 from pyui.desktop import getDesktop
 from pyui.renderers import openglBase
 
@@ -218,3 +219,40 @@ class OpenGLGlut(openglBase.OpenGLBase):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+    def ReSizeGLScene(self, Width, Height):
+        # Prevent A Divide By Zero If The Window Is Too Small     
+        if Height == 0:	
+            Height = 1
+
+        # Reset The Current Viewport And Perspective Transformation
+        glViewport(0, 0, Width, Height)		
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
+        glMatrixMode(GL_MODELVIEW)
+        self.width = Width
+        self.height = Height
+
+    def getTextSize(self, text, font = None):
+        """This text method uses the old GLUT rendering instead of True Type fonts.
+        """
+        if font == 'fixed':
+            return ( 8 * len( text ), 13 )        
+        w = 0
+        for c in text:
+            w += glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, ord(c))
+        return (w, pyui.locals.TEXT_HEIGHT)
+
+
+    def do_text_OLD(self, text, position, color, font ):
+        """This text method uses the old GLUT rendering instead of True Type fonts.
+        """
+        glColor4ub( color[0], color[1], color[2], color[3] )
+        glRasterPos2f(position[0], position[1]+13)
+        if font == 'fixed':
+            font = GLUT_BITMAP_8_BY_13
+        else:
+            font = GLUT_BITMAP_HELVETICA_12
+        for char in text:
+            glutBitmapCharacter(font, ord(char))

@@ -43,8 +43,8 @@ from pyui.renderer3d import Renderer3DBase
 from pyui.desktop import getDesktop
 
 from OpenGL.GL import *
-#from OpenGL.GLU import gluPerspective
-#from OpenGL.GLUT import *
+
+
 
 ######################################################
 ## Utility functions
@@ -330,19 +330,6 @@ class OpenGLBase(Renderer3DBase):
         # leave in model view mode
         glMatrixMode(GL_MODELVIEW)        
 
-##    def ReSizeGLScene(self, Width, Height):
-##        # Prevent A Divide By Zero If The Window Is Too Small     
-##        if Height == 0:	
-##            Height = 1
-
-##        # Reset The Current Viewport And Perspective Transformation
-##        glViewport(0, 0, Width, Height)		
-##        glMatrixMode(GL_PROJECTION)
-##        glLoadIdentity()
-##        gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-##        glMatrixMode(GL_MODELVIEW)
-##        self.width = Width
-##        self.height = Height
 
     def getScreenSize(self):
         """ Returns (width, height) of the scene viewport
@@ -365,47 +352,9 @@ class OpenGLBase(Renderer3DBase):
     ##
     ######################################################
 
-    def do_text(self, text, position, color, font ):
-        """Draw some text to the screen using a bitmapped font"""
-        #print "Drawing:", text
-        if len(text) < 1:
-            return
-
-        if not font:
-            font = pyui.desktop.getTheme().defaultFont
-        (name, size, flags) = self.fonts[font]
-        #print "do_text:", font, self.fontId, name, size, text, position, color
-        
-        glColor4ub( color[0], color[1], color[2], color[3] )
-        glRasterPos2i(position[0], position[1] + size*1.2)
-        glListBase(font)
-        glCallLists(text)
-
-
     def createFont(self, fontName, fontSize, flags):
         pass
     
-    def getTextSize(self, text, font = None):
-        """This text method uses the old GLUT rendering instead of True Type fonts.
-        """
-        if font == 'fixed':
-            return ( 8 * len( text ), 13 )        
-        w = 0
-        for c in text:
-            w += glutBitmapWidth(GLUT_BITMAP_HELVETICA_12, ord(c))
-        return (w, pyui.locals.TEXT_HEIGHT)
 
 
-
-    def do_text_OLD(self, text, position, color, font ):
-        """This text method uses the old GLUT rendering instead of True Type fonts.
-        """
-        glColor4ub( color[0], color[1], color[2], color[3] )
-        glRasterPos2f(position[0], position[1]+13)
-        if font == 'fixed':
-            font = GLUT_BITMAP_8_BY_13
-        else:
-            font = GLUT_BITMAP_HELVETICA_12
-        for char in text:
-            glutBitmapCharacter(font, ord(char))
 
