@@ -2,22 +2,45 @@ import testopt
 import time
 import pyui
 
-from twisted.internet import main
-from twisted.enterprise import adbapi, row
+from twisted.internet import main,app
+from twisted.enterprise import adbapi, row, sqlreflector
 
 from pyui.desktop import getDesktop, getTheme, getRenderer
 from pyui.database import DBGridPanel
 
 
 class TPRow(row.RowObject):
-    rowColumns = [ "identity_name", "perspective_name", "service_name", "perspective_type" ]
+    rowTableName = "twisted_perspectives"
+    rowKeyColumns = [ ("identity_name", "varchar") ]
+    rowColumns = [ ("identity_name","varchar"), 
+                   ("perspective_name","varchar"), 
+                   ("service_name","varchar"), 
+                   ("perspective_type","int") ]
     
 class AvatarRow(row.RowObject):
-    rowColumns = [ "id", "name", "description", "startingroomid", "startingtownid", "score", "bodyid" ]
+    rowTableName = "avatars"
+    rowKeyColumns = [ ("gid", "int") ]
+    rowColumns = [ ("gid","int"), 
+                   ("name","varchar"), 
+                   ("description","varchar"), 
+                   ("startinglotid", "int"),
+                   ("startingtownid", "int"),
+                   ("score","int"), 
+                   ("bodyid","int") ]
 
 class RoomRow(row.RowObject):
-    rowColumns = [
-        "id", "townid", "name", "objecttypename", "description", "ownerid", "posx", "posy", "width","height" ]
+    rowTableName = "rooms"
+    rowKeyColumns = [ ("gid", "int") ]
+    rowColumns = [ ("gid",  "int"),
+                   ("townid",   "int"),
+                   ("name","varchar"), 
+                   ("objecttypename","varchar"), 
+                   ("description","varchar"), 
+                   ("ownerid",   "int"),
+                   ("posx",   "int"),
+                   ("posy",  "int"),
+                   ("width", "int"),
+                   ("height" , "int") ]
 
 class TestApp:
     """Test application for the DBGrid tests.
@@ -32,8 +55,8 @@ class TestApp:
 
         ## DB init stuff
         self.dbpool = adbapi.ConnectionPool("pyPgSQL.PgSQL", "sean", host="localhost:5432")    
-        self.application = main.Application("testApp")
-        self.reflector = row.DBReflector(self.dbpool, [], self.makeGrids)
+        self.application = app.Application("testApp")
+        self.reflector = sqlreflector.SQLReflector(self.dbpool, [], self.makeGrids)
 
         main.addTimeout(self.tick, 0.001)        # make sure we can be shut down on windows.
         self.application.run()

@@ -10,8 +10,6 @@ class app:
         print "Initializing"
         self.grid = pyui.widgets.Frame(10, 10, 400, 400, "grid")
         self.grid.setLayout( pyui.layouts.GridLayoutManager(3, 4) )
-        #self.grid.setBackImage("max.bmp")
-        #print self.grid
         
         self.b3 = pyui.widgets.Button("a long name", self.onButton)
         self.b4 = pyui.widgets.ImageButton("max.bmp", self.onButton)
