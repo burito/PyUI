@@ -10,10 +10,9 @@ class Frame(Window):
     """
     def __init__(self, x, y, w, h, title, topmost = 0):
         self.theme = getTheme()
-        self.innerWidth = w
-        self.innerHeight = h
         self.title = title
         self._menuBar = None
+        self.innerRect = (0,0,w,h)
         
         Window.__init__(self, x, y, w, h, topmost)
         self.setTitle(self.title)
@@ -30,6 +29,8 @@ class Frame(Window):
         self.resizingCursor=0
         self.movingCursor=0
         self.backImage=None
+        self.calcInnerRect()
+        self.placeInnerObjects()
 
     def placeInnerObjects(self):
         self._panel.moveto(self.innerRect[0], self.innerRect[1])
@@ -53,7 +54,7 @@ class Frame(Window):
         left += self.theme.getFrameBorderLeft()
         width -= (self.theme.getFrameBorderLeft() + self.theme.getFrameBorderRight())
         top += self.theme.getFrameBorderTop()
-        height -= self.theme.getFrameBorderBottom()
+        height -= (self.theme.getFrameBorderBottom() + self.theme.getFrameBorderTop())
 
         self.innerRect = (left, top, width, height)
         
@@ -122,14 +123,15 @@ class Frame(Window):
             return 1
 
         # set the proper cursor
-        if event.pos[0] > self.posX + self.innerWidth and event.pos[1] > self.posY + self.innerHeight:
+        regionId = self.hitFrameRegion(event.pos)
+        if regionId == pyui.locals.HIT_FRAME_RESIZE_BOTTOM_RIGHT:        
             self.resizingCursor=1
             self.theme.setResizeCursor()
         elif self.resizingCursor:
             self.resizingCursor=0
             self.theme.setArrowCursor()
-            
-        if event.pos[0] < self.posX +self.width- 32 and event.pos[1] < self.posY + self.theme.getFrameBorderTop()-8:
+
+        if regionId == pyui.locals.HIT_FRAME_MOVE:            
             self.movingCursor = 1
             self.theme.setMovingCursor()
         elif self.movingCursor:

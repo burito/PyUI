@@ -73,7 +73,7 @@ class ConsoleEdit(pyui.widgets.Edit):
         self.registerEvent(locals.KEYDOWN, self._pyuiKeyDown)
 
     def _pyuiEnter(self, object):
-        self.execCallback(self)
+        self.execCallback(self.text)
         self.history.append(self.text)
         self.historyPos = len(self.history) - 1
         self.setText("")
@@ -231,14 +231,16 @@ class LineDisplay(pyui.widgets.Base):
 # python console window
 class Console(pyui.widgets.Frame):
 
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, callback = None):
         pyui.widgets.Frame.__init__(self, x, y, w, h, "Console")
         self.setLayout(pyui.layouts.BorderLayoutManager())
         self.output = ConsoleOutput()
         self.locals = {}
-
+        if not callback:
+            callback = self._pyuiGo
+            
         # create gui objects
-        self.inputBox = ConsoleEdit("", 80, self._pyuiGo)
+        self.inputBox = ConsoleEdit("", 80, callback)
         self.goButton = pyui.widgets.Button("Go", self._pyuiGo)
         self.outputBox = LineDisplay()
 
@@ -264,8 +266,7 @@ class Console(pyui.widgets.Frame):
         self.setDirty()
         return 1
 
-    def _pyuiGo(self, object):
-        command = self.inputBox.text
+    def _pyuiGo(self, command):
         self.output.beginCapture()
         try:
             print ">%s" % command

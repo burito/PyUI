@@ -31,22 +31,20 @@ import time
 
 import pyui
 
-if USE_TRUETYPE_FONTS:
-    try:
-        import win32ui
-    except:
-        print "UNABLE TO IMPORT win32ui. Using GLUT text renderering"
-        USE_TRUETYPE_FONTS = 0
+##if USE_TRUETYPE_FONTS:
+##    try:
+##        import win32ui
+##    except:
+##        print "UNABLE TO IMPORT win32ui. Using GLUT text renderering"
+##        USE_TRUETYPE_FONTS = 0
     
 
 from pyui.renderer3d import Renderer3DBase
 from pyui.desktop import getDesktop
 
 from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
-
-from OpenGL.WGL import wglUseFontBitmaps, wglGetCurrentDC
+#from OpenGL.GLU import gluPerspective
+#from OpenGL.GLUT import *
 
 ######################################################
 ## Utility functions
@@ -136,6 +134,7 @@ class OpenGLBase(Renderer3DBase):
 
     def drawRect(self, color, rect):
         """Fills a rectangle with the specified color."""
+        glDisable(GL_TEXTURE_2D)
         glBegin(GL_QUADS)
         glColor4ub( color[0], color[1], color[2], color[3] )
         glVertex2i(rect[0], rect[1])
@@ -331,19 +330,19 @@ class OpenGLBase(Renderer3DBase):
         # leave in model view mode
         glMatrixMode(GL_MODELVIEW)        
 
-    def ReSizeGLScene(self, Width, Height):
-        # Prevent A Divide By Zero If The Window Is Too Small     
-        if Height == 0:	
-            Height = 1
+##    def ReSizeGLScene(self, Width, Height):
+##        # Prevent A Divide By Zero If The Window Is Too Small     
+##        if Height == 0:	
+##            Height = 1
 
-        # Reset The Current Viewport And Perspective Transformation
-        glViewport(0, 0, Width, Height)		
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
-        glMatrixMode(GL_MODELVIEW)
-        self.width = Width
-        self.height = Height
+##        # Reset The Current Viewport And Perspective Transformation
+##        glViewport(0, 0, Width, Height)		
+##        glMatrixMode(GL_PROJECTION)
+##        glLoadIdentity()
+##        gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
+##        glMatrixMode(GL_MODELVIEW)
+##        self.width = Width
+##        self.height = Height
 
     def getScreenSize(self):
         """ Returns (width, height) of the scene viewport

@@ -17,15 +17,13 @@
 import sys
 import time
 import pyui.locals
-from pyui.themes import comic, future, green, win2k
+#from pyui.themes import comic, future, green, win2k
 
 import colors
 import string
 import os
 
 from desktop import Desktop, readTimer
-from rendererBase import RendererBase
-from renderer3d import Renderer3DBase
 
 ###########################################################
 # Section: Globals
@@ -48,9 +46,11 @@ def init(w, h, renderer = "p3d", fullscreen = 0, title=""):
     """
     global gDesktop, gRenderer
     if renderer == "null":
+        from rendererBase import RendererBase
         gRenderer = RendererBase(w, h, fullscreen, title)
 
     elif renderer == "null3d":
+        from pyui.renderer3d import Renderer3DBase
         gRenderer = Renderer3DBase(w, h, fullscreen, title)
         
     elif renderer == "2d":
@@ -83,9 +83,13 @@ def init(w, h, renderer = "p3d", fullscreen = 0, title=""):
     (w , h) = gRenderer.getScreenSize()
     # create the theme and desktop
     #theTheme = comic.ComicTheme(gRenderer)
-    theTheme = future.FutureTheme(gRenderer)
     #theTheme = green.GreenTheme(gRenderer)
     #theTheme = win2k.Win2kTheme(gRenderer)
+
+
+    from themes import future
+    theTheme = future.FutureTheme(gRenderer)
+    
     
     gDesktop = Desktop(gRenderer, w, h, fullscreen, theTheme)
     colors.init(gRenderer)

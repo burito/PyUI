@@ -368,10 +368,11 @@ class Window(Base):
         self._panel = Panel()
         Base.__init__(self)
         self.topMost = topmost
-        self._panel.moveto(0,0)
         # the content panel is added as a child through Base::addChild to avoid recursively adding it to itself
         Base.addChild(self, self._panel)
         self._panel.setWindow(self)
+        self.placeInnerObjects()
+        
         self.drawCommands = []
         # these are drawing callbacks to draw _after_ all the widgets are drawn
         self.drawLastCallbacks = [] 
@@ -452,9 +453,11 @@ class Window(Base):
         self._panel = panel
         Base.addChild(self, self._panel)
         panel.setWindow(self)
+        self.placeInnerObjects()
+
+    def placeInnerObjects(self):
         self._panel.moveto(0,0)
         self._panel.resize(self.width, self.height)
-
         
     def setDirty(self, collide = 1):
         self.dirty = 1

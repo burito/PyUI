@@ -184,7 +184,6 @@ class GLFont:
         self.font = pygame.font.Font(faceFile, size*1.3)
             
         self.charInfo = []  # tuples of (width, height, texture coordinates) for each character
-        self.textCache = {}
         self.createGlyphs()
 
     def createGlyphs(self):
@@ -249,7 +248,6 @@ class GLFont:
         data = pygame.image.tostring(self.packedSurface, "RGBA", 1)        
         glBindTexture(GL_TEXTURE_2D, self.texture)
         glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-        #print "w: %s h: %d"  %( totalWidth, totalHeight)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, totalWidth, totalHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
         
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
@@ -292,25 +290,6 @@ class GLFont:
         glPopMatrix()
         glDisable(GL_TEXTURE_2D)        
 
-
-    def cacheText(self, text):
-        ##TODO
-        #glPushMatrix()
-        #glTranslate(xPos,yPos,0)
-        if not self.textCache.has_key(text):
-            foo = glGenLists(1)
-            glNewList(foo, GL_COMPILE)
-            glPushMatrix()            
-
-            for c in text:
-                width = self.charInfo[ord(c)][0]
-                glCallList( self.displayLists[ord(c)])
-                glTranslate(width,0,0)
-            glPopMatrix()                            
-            glEndList()
-            self.textCache[text] = newList
-
-        
     def getTextSize(self, text):
         w = 0
         h = 0
