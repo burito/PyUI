@@ -94,7 +94,7 @@ def drawCube():
 
 def createControl():
 
-    w = pyui.widgets.Frame(0,0,200,200, "Controls")
+    w = pyui.widgets.Frame(0,0,200,100, "Controls")
     w.setLayout(pyui.layouts.GridLayoutManager(1,3))
     sx = pyui.widgets.SliderBar(setX, 10, int(rotateX*10) )
     sy = pyui.widgets.SliderBar(setY, 10, int(rotateY*10) )
