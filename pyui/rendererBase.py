@@ -188,4 +188,5 @@ class RendererBase:
         self.mouseOffset = (offsetX, offsetY)
 
     def drawMouseCursor(self):
-        self.drawImage( (self.mousePosition[0]-self.mouseOffset[0], self.mousePosition[1]-self.mouseOffset[1], 32, 32), self.mouseCursor)
+        if self.mouseCursor:
+            self.drawImage( (self.mousePosition[0]-self.mouseOffset[0], self.mousePosition[1]-self.mouseOffset[1], 32, 32), self.mouseCursor)
