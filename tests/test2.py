@@ -70,7 +70,8 @@ class game:
 
 
 class testDialog(pyui.dialogs.Dialog):
-    """Dialog to setup options for a trade route"""
+    """test Dialog
+    """
     def __init__(self):
         pyui.dialogs.Dialog.__init__(self, 200, 200, 200, 200, "Test Dialog")
         self.setLayout(pyui.layouts.BorderLayoutManager())

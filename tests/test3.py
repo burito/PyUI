@@ -2,7 +2,6 @@ import time
 import pyui
 from pyui.locals import *
 
-
 class game:
     def __init__(self):
 
@@ -19,18 +18,10 @@ class game:
         for i in range(0,20):
             self.listbox.addItem("item %d" % i, 0)
         self.listbox.resize(120,120)
-##        self.menu = pyui.widgets.MenuBarWidget()
-##        for i in range(0,4):
-##            m = pyui.widgets.Menu("test1")
-##            m.addItem("testing")
-##            m.addItem("testing")
-##            m.addItem("testing")            
-##            self.menu.addMenu(m)
         
         self.grid.addChild(self.b3, (330,30))
         self.grid.addChild(self.entry, (20, 20))
         self.grid.addChild(self.listbox, (0,230))
-        #self.grid.addChild(self.menu, (0,0) )
         self.grid.pack()
 
         self.console = None

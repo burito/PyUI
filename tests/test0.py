@@ -1,6 +1,7 @@
 import testopt
 import time
 import pyui
+from pyui import widgets, frame, core
 
 def onbutton(self):
     print "got a button " 
@@ -8,18 +9,17 @@ def onbutton(self):
 def run():
     opts = testopt.parseCommandLine(800, 600)
     done = 1
-    frame = 0
     t = time.time()
-    pyui.init(*opts)
-    w = pyui.widgets.Frame(50, 100, 400, 400, "Test Window")
-    m = pyui.widgets.FrameMenuBar()
+    core.init(*opts)
+    w = widgets.Frame(50, 100, 400, 400, "Test Window")
+    m = frame.FrameMenuBar()
     
-    mm = pyui.widgets.FrameMenu("TestMe")
+    mm = frame.FrameMenu("TestMe")
     mm.addItem("one", onbutton)
     mm.addItem("foobarme", onbutton)
     m.addMenu(mm)
 
-    m2 = pyui.frame.FrameMenu("Second One")
+    m2 = frame.FrameMenu("Second One")
     m2.addItem("Long test one", onbutton)
     m2.addItem("hello", onbutton)
     m2.addItem("Long test one", onbutton )
@@ -31,15 +31,15 @@ def run():
     w.setMenuBar(m)
     
 
-    b = pyui.widgets.Button( "A button is here", onbutton)
+    b = widgets.Button( "A button is here", onbutton)
     w.addChild(b)
     w.pack()
 
     w.setBackImage("max.bmp")
-    pyui.run()
+    core.run()
 
     print "done"
-    pyui.quit()
+    core.quit()
 
 
 if __name__ == '__main__':
