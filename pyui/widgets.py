@@ -111,7 +111,7 @@ class Button(Base):
 
     canTab = 1    
     
-    def __init__(self, text, handler = None, font=None, shadow=0, fgColor=None, bgColor=None, roColor=None):
+    def __init__(self, text, handler = None, font=None, shadow=0, fgColor=0, bgColor=0, roColor=0):
         Base.__init__(self)
         self.handler = handler
         self.font=font
@@ -177,6 +177,7 @@ class Button(Base):
             return 1
 
         if self.hit(event.pos):
+            #print "button got mouse move:", event.pos            
             if self.status != Button.ROLLOVER:
                 getDesktop().getTheme().setButtonCursor()
                 self.status = Button.ROLLOVER
@@ -271,7 +272,7 @@ class Edit(Base):
         self.setText(text)        
         self.dragging = 0
         self.max = max
-        self.resize(self.width, int(getTheme().defaultTextHeight*1.5))
+        self.resize(self.width, int(getRenderer().getTextSize("x")[1] * 1.5) )
         #print "Edit widget sized to", self.width, self.height
         self.registerEvent(pyui.locals.KEYDOWN, self._pyuiKeyDown)
         self.registerEvent(pyui.locals.CHAR, self._pyuiChar)
@@ -727,7 +728,7 @@ class ListBox(Base):
     def __init__(self, onSelected = None, onDouble = None):
         Base.__init__(self)
         self.items = []
-        self.numVisible = self.height / getTheme().defaultTextHeight
+        self.numVisible = self.height / ( getRenderer().getTextSize("x")[1] )
         self.numItems = 0
         self.topItem = 0
         self.selected = -1
@@ -750,7 +751,7 @@ class ListBox(Base):
 
     def clearAllItems(self):
         self.items = []
-        self.numVisible = self.height / getTheme().defaultTextHeight
+        self.numVisible = self.height /  ( getRenderer().getTextSize("x")[1] )
         self.numItems = 0
         self.topItem = 0
         self.selected = -1
@@ -814,15 +815,15 @@ class ListBox(Base):
                 if i >= self.topItem and i < self.topItem + self.numVisible:
                     if i == self.selected:
                         getTheme().drawListBoxItem( (self.windowRect[0]+1,
-                                                     self.windowRect[1]+2 + (i-self.topItem) * getTheme().defaultTextHeight,
+                                                     self.windowRect[1]+2 + (i-self.topItem) * renderer.getTextSize("x")[1],
                                                      self.width - getTheme().getScrollerSize(),
-                                                     getTheme().defaultTextHeight-2),
+                                                     (getRenderer().getTextSize("x")[1] )-2 ),
                                                     item.name, 1, item.color)
                     else:
                         getTheme().drawListBoxItem( (self.windowRect[0]+1,
                                                      self.windowRect[1]+2 + (i-self.topItem) * getTheme().defaultTextHeight,
                                                      self.width - getTheme().getScrollerSize(),
-                                                     getTheme().defaultTextHeight-2),
+                                                     ( getRenderer().getTextSize("x")[1] )-2),                                                     
                                                     item.name, 0, item.color)                    
                 i = i + 1
             self.vscroll.draw(renderer)
@@ -835,7 +836,7 @@ class ListBox(Base):
     def _pyuiLButtonDown(self, event):
         if not self.hit(event.pos):
             return 0
-        item =  int( (event.pos[1] - self.rect[1]) / getTheme().defaultTextHeight )
+        item =  int( (event.pos[1] - self.rect[1]) / getRenderer().getTextSize("x")[1] )
         self.selected = item + self.topItem
         self.postEvent(pyui.locals.LIST_SELECTED)
         self.setDirty()
@@ -847,7 +848,7 @@ class ListBox(Base):
     def _pyuiDoubleClick(self, event):
         if not self.hit(event.pos):
             return 0
-        item =  int( (event.pos[1] - self.rect[1]) / getTheme().defaultTextHeight )
+        item =  int( (event.pos[1] - self.rect[1]) / getRenderer().getTextSize("x")[1] )
         self.selected = item + self.topItem
         self.postEvent(pyui.locals.LIST_DBLCLICK)
         self.setDirty()
@@ -869,7 +870,7 @@ class ListBox(Base):
             
     def resize(self, w, h):
         Base.resize(self, w, h)
-        self.numVisible = int (self.height / getTheme().defaultTextHeight )
+        self.numVisible = int (self.height / getRenderer().getTextSize("x")[1] )
         self.vscroll.setNumItems(self.numItems, self.numVisible)
         self.vscroll.resize(getTheme().getScrollerSize(), h)
         self.vscroll.moveto(w-getTheme().getScrollerSize(), 0)
@@ -993,7 +994,7 @@ class DropDownBox(Base):
         self.positionSelectionList()
 
     def positionSelectionList(self):
-        self.selectionList.resize(self.width, self.numVisible * getTheme().defaultTextHeight)
+        self.selectionList.resize(self.width, self.numVisible * getRenderer().getTextSize("x")[1])
         self.selectionList.moveto(0, self.height)
 
 class CheckBox(Base):

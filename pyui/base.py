@@ -395,6 +395,7 @@ class Window(Base):
     def drawWindow(self, renderer):
         """Sets up window drawing for the renderer, and then calls standard draw() method.
         """
+        #print "drawWindow ", self.handle, self.dirty
         if self.dirty:
             self.drawCommands = []
             renderer.setDrawList(self.drawCommands)
@@ -422,7 +423,7 @@ class Window(Base):
 
     def move(self, x, y):
         Base.move(self, x,y)
-        getRenderer().moveWindow(self.handle, self.posX, self.posY)
+        getRenderer().moveWindow(self.handle, self.posX+x, self.posY+y)
 
     def moveto(self, x, y):
         Base.moveto(self, x,y)
@@ -453,8 +454,10 @@ class Window(Base):
         panel.setWindow(self)
         self._panel.moveto(0,0)
         self._panel.resize(self.width, self.height)
+
         
     def setDirty(self, collide = 1):
+        self.dirty = 1
         if self.dirty:
             return
         if collide:

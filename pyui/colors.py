@@ -34,7 +34,7 @@ def init(ren):
     red =     ren.packColor(255, 0,   0)
     green =   ren.packColor(0,   255, 0)
     blue =    ren.packColor(0,   0,   255)
-    grey =    ren.packColor(100, 100, 100)
+    grey =    ren.packColor(150, 150, 150)
     yellow =  ren.packColor(255,255,0)
     orange =  ren.packColor(255,128,0)
     

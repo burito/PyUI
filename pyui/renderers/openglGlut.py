@@ -79,6 +79,9 @@ class OpenGLGlut(openglBase.OpenGLBase):
             else:
                 glCallList(w.displayList)
 
+
+        self.setWindowOrigin(0,0)
+        self.drawMouseCursor()
         self.teardown2D()
         glutSwapBuffers()    
 
@@ -104,6 +107,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
 
     def onMotion(self, x, y):
         getDesktop().postUserEvent(pyui.locals.MOUSEMOVE, x,y)
+        self.mousePosition = (x,y)
 
     def getModifiers(self):
         """NOTE: GLUT does not detect the CONTROL key!!!! BUG!!

@@ -45,6 +45,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
             self.screen = pygame.display.set_mode((w, h), locals.OPENGL | locals.DOUBLEBUF)
 
         pygame.key.set_mods(locals.KMOD_NONE)
+        pygame.mouse.set_visible(0)
         
 
     def draw(self, windows):
@@ -62,6 +63,8 @@ class OpenGLPygame(openglBase.OpenGLBase):
             else:
                 glCallList(w.displayList)
 
+        self.setWindowOrigin(0,0)
+        self.drawMouseCursor()
         self.teardown2D()
     
         pygame.display.flip()
@@ -92,6 +95,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
                     desktop.postUserEvent(pyui.locals.RMOUSEBUTTONUP, event.pos[0], event.pos[1])
                     
             elif event.type == locals.MOUSEMOTION:
+                self.mousePosition = event.pos
                 desktop.postUserEvent(pyui.locals.MOUSEMOVE, event.pos[0], event.pos[1])
 
             elif event.type == locals.KEYDOWN:
@@ -146,7 +150,55 @@ class OpenGLPygame(openglBase.OpenGLBase):
             self.textures[filename] = texture
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+
+##    def createFont(self, face, size, flags):
+##        newFont = pygame.font.Font(None, size)
+##        self.fonts[newFont] = (face, size, flags)
+##        print "Created font", newFont, face, size                
+##        return newFont
+
+##    def drawText(self, text, pos, color, font = None):
+##        if not font:
+##            font = pyui.desktop.getTheme().defaultFont
+
+##        # create surface
+##        surface = font.render(text, 1, color)
+##        data = pygame.image.tostring(surface, "RGBA", 1)
+##        ix = surface.get_width()
+##        iy = surface.get_height()
+
+##        texture = 77
+##        print ix, iy, surface, text, texture
+##        # create openGL texture
+##        texture = glGenTextures(1)
+##        glBindTexture(GL_TEXTURE_2D, texture)
+##        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+##        print ix, iy, surface, text, texture        
+##        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, data)
+
+        
+##        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
+##        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+##        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+
+##        # draw the texture
+##        glEnable(GL_TEXTURE_2D)
+##        glBindTexture( GL_TEXTURE_2D, texture)
+
+##        glBegin(GL_QUADS)
+##        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
+##        glVertex2i( rect[0], rect[1])
+##        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
+##        glVertex2i( rect[0] + rect[2], rect[1])
+##        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
+##        glVertex2i( rect[0] + rect[2], rect[1] + rect[3])
+##        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
+##        glVertex2i( rect[0], rect[1] + rect[3])
+##        glEnd()
+##        glDisable(GL_TEXTURE_2D)
+        
+##        # delete the texture
+##        glDeleteTextures(texture)

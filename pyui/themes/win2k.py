@@ -105,7 +105,7 @@ class Win2kTheme(ThemeBase):
 
         if not roColor:
             roColor = self.buttonRoA
-            
+
         if status == 0:
             self.draw3DRect(rect, bgColor, 0)
         elif status == 1:
@@ -118,7 +118,11 @@ class Win2kTheme(ThemeBase):
         if not font:
             font=self.defaultFont
 
+        print "button draw: getting text size:", title, font
+        
         size = self.renderer.getTextSize(title, font)
+
+        print "button draw:", title, size
         
         if shadow:
             self.renderer.drawText( title, (x + (w-size[0])/2+shadow, y + (h-size[1])/2+shadow), pyui.colors.black, font)            
@@ -209,7 +213,7 @@ class Win2kTheme(ThemeBase):
                                      rect[1]+self.frameBorderTop,
                                      rect[2] - self.frameBorderLeft - self.frameBorderRight,
                                      rect[3] - self.frameBorderTop - self.frameBorderBottom), backImage)
-        
+
         # draw caption bar        
         (x,y,w,h)=(rect[0], rect[1], rect[2], self.frameBorderTop)
         self.drawGradient((x, y, w, h), 1, self.captionA, self.captionB)
@@ -254,6 +258,7 @@ class Win2kTheme(ThemeBase):
                    rect[1]+rect[3]-self.frameBorderBottom,
                    self.frameBorderRight,
                    self.frameBorderBottom)
+        
         self.draw3DRect((x,y,w,h), self.bgColor2, 0)
         hitList.append((pyui.locals.HIT_FRAME_RESIZE_BOTTOM_RIGHT, (x,y,w,h)))
 

@@ -48,14 +48,15 @@ class ThemeBase:
         self.defaultFontSize = fontSize
         self.defaultFontFlags = fontFlags
         self.defaultFont = renderer.createFont(fontFace, fontSize, fontFlags)
-        (self.defaultTextWidth, self.defaultTextHeight) = renderer.getTextSize("M", self.defaultFont)
+        #(self.defaultTextWidth, self.defaultTextHeight) = renderer.getTextSize("M", self.defaultFont)
+        self.defaultTextHeight = fontSize*2.5
 
         # setup widget offsets
         self.frameBorderLeft = 4
         self.frameBorderRight = 4
-        self.frameBorderTop = self.defaultTextHeight + 4
+        self.frameBorderTop = fontSize *2.2
         self.frameBorderBottom = 4
-        self.tabsHeight = int(self.defaultTextHeight * 1.3)
+        self.tabsHeight = int(fontSize * 1.3)
         self.scrollerSize = 10
         
 
@@ -107,7 +108,8 @@ class ThemeBase:
         """Draw a 3D rectangle
         """
         (r,g,b,a) = self.renderer.unpackColor(color)
-        a=255
+        #a=255
+
         colorLo = self.renderer.packColor(r/2, g/2, b/2, a)
         colorHi = self.renderer.packColor(128 + r/2, 128 + g/2, 128 + b/2, a)
 
@@ -117,7 +119,7 @@ class ThemeBase:
         (x,y,w,h) = rect
         if w < 2 or h < 2:
             return
-
+        
         self.renderer.drawRect( colorHi, (x, y, w-thick, thick) )
         self.renderer.drawRect( colorHi, (x, y+thick, thick, h-thick) )
         if w > 2 and h > 2:

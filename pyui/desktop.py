@@ -119,10 +119,10 @@ class Desktop:
         """Called constantly by the application to process PyUI events and scheduled callbacks.
         """
         self.renderer.update()
-        
         # process user events
         while self.running and self.userEvents:
             e = self.userEvents.pop(0)
+
             self.handleEvent(e)
             if not self.running:
                 return self.running
@@ -215,7 +215,6 @@ class Desktop:
         (private)
         """
         if event.type != 0:
-
             if event.type == pyui.locals.QUIT:
                 self.quit()
                 print "DONE!"
@@ -242,7 +241,7 @@ class Desktop:
             for w in self.windows:
                 if w.handleEvent(event):
                     return
-
+            
             # check for application handlers
             if self.userHandlers.has_key(event.type):
                 self.userHandlers[event.type](event)
@@ -308,7 +307,7 @@ class Desktop:
             self.theme.setWaitCursor()
         else:
             self.theme.setArrowCursor()
-
+        
     def setFocus(self, widget):
         """Set the focus to this widget.
         """
@@ -339,6 +338,7 @@ class Desktop:
         """
         newEvent = guiEvent(type, 0, x, y, key, mods)
         self.userEvents.append(newEvent)
+        return newEvent
 
     def postEvent(self, type, id = 0):
         """Post an event object into the system. Comes from a widget object.
@@ -400,7 +400,6 @@ class Desktop:
     def nextID(self):
         self.lastID = self.lastID + 1
         return self.lastID
-               
 
 def getUserEvent():
     """Request an event ID in the user event space.

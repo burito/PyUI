@@ -296,7 +296,9 @@ class OpenGLBase(Renderer3DBase):
         raise
     
 
-    def clear(self):
+    def clear(self, color=None):
+        if color:
+            glClearColor( color[0], color[1], color[2], color[3] )
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         self.clip_stack = []
 
@@ -331,11 +333,13 @@ class OpenGLBase(Renderer3DBase):
     def teardown2D(self):
         """tear down the 2D stuff to revert to the previous state.
         """
+        # pop off 2D state matrices
+        glMatrixMode(GL_MODELVIEW)        
         glPopMatrix()    
         glMatrixMode(GL_PROJECTION)
         glPopMatrix()
-        glEnable(GL_DEPTH_TEST)
-        glDisable(GL_SCISSOR_TEST)
+        # leave in model view mode
+        glMatrixMode(GL_MODELVIEW)        
 
     def ReSizeGLScene(self, Width, Height):
         # Prevent A Divide By Zero If The Window Is Too Small     
@@ -380,7 +384,6 @@ class OpenGLBase(Renderer3DBase):
 
         if not font:
             font = pyui.desktop.getTheme().defaultFont
-
         (name, size, flags) = self.fonts[font]
         #print "do_text:", font, self.fontId, name, size, text, position, color
         

@@ -108,7 +108,7 @@ class LineDisplay(pyui.widgets.Base):
         #self.bgColor = (0,0,49, 255)
         self.lines = []
         self.displayLines = []
-        self.numVisible = self.height / locals.TEXT_HEIGHT
+        self.numVisible = self.height / getRenderer().getTextSize("x")[1]
         self.numItems = 0
         self.topItem = 0
         self.rewrap = 0
@@ -120,7 +120,7 @@ class LineDisplay(pyui.widgets.Base):
     def clear(self):
         self.lines = []
         self.displayLines = []
-        self.numVisible = self.height / locals.TEXT_HEIGHT
+        self.numVisible = self.height / getRenderer().getTextSize("x")[1]
         self.numItems = 0
         self.topItem = 0
         self.rewrap = 0
@@ -201,9 +201,10 @@ class LineDisplay(pyui.widgets.Base):
             self.rewrap = 0
             
         i = 0
+        h = getRenderer().getTextSize("x")[1]
         for (line, color) in self.displayLines:
             if i >= self.topItem and i < (self.topItem + self.numVisible):
-                renderer.drawText(line, (self.windowRect[0]+2, self.windowRect[1]+2+((i-self.topItem)*locals.TEXT_HEIGHT)), color )
+                renderer.drawText(line, (self.windowRect[0]+2, self.windowRect[1]+2+((i-self.topItem)*h)), color )
             i += 1
         self.vscroll.draw(renderer)
         self.clearDirty()
@@ -218,7 +219,7 @@ class LineDisplay(pyui.widgets.Base):
         self.vscroll.resize(getTheme().getScrollerSize(), h)
         self.vscroll.moveto(w-getTheme().getScrollerSize(), 0)
         self.textWidth = self.width - self.vscroll.width
-        self.numVisible = self.height / locals.TEXT_HEIGHT
+        self.numVisible = self.height / getRenderer().getTextSize("x")[1]
         self.rewrap = 1
 
     def destroy(self):

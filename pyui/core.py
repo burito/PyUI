@@ -72,7 +72,11 @@ def init(w, h, renderer = "p3d", fullscreen = 0, title=""):
     elif renderer == "nebula":
         from renderers import nebula
         gRenderer = nebula.RendererNeb(w, h, fullscreen)
-    
+
+    elif renderer == "gdi":
+        from renderers import rendererGDI
+        rendererGDI.initialize(w,h)
+        gRenderer = rendererGDI
     else:
         raise "Unsupported renderer type", renderer
         

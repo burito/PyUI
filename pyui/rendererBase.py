@@ -39,6 +39,9 @@ class RendererBase:
         self.last = 0
         self.drawBackMethod = None
         self.drawBackArgs = []
+        self.mouseCursor = None
+        self.mouseOffset = (0,0)
+        self.mousePosition = (0,0)
 
     def getScreenSize(self):
         return (self.w, self.h)
@@ -180,3 +183,9 @@ class RendererBase:
         """
         pass
     
+    def setMouseCursor(self, cursor, offsetX, offsetY):
+        self.mouseCursor = cursor
+        self.mouseOffset = (offsetX, offsetY)
+
+    def drawMouseCursor(self):
+        self.drawImage( (self.mousePosition[0]-self.mouseOffset[0], self.mousePosition[1]-self.mouseOffset[1], 32, 32), self.mouseCursor)

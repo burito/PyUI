@@ -40,6 +40,7 @@ class Pygame2D(pyui.core.RendererBase):
         self.screen.set_alpha(255)
             
         pygame.key.set_mods(KMOD_NONE)
+        pygame.mouse.set_visible(0)        
 
         pyui.locals.K_SHIFT     = 304
         pyui.locals.K_CONTROL   = 306
@@ -109,6 +110,7 @@ class Pygame2D(pyui.core.RendererBase):
                 for command in w.drawCommands:
                     self.doDrawCommand(command)
 
+        self.drawMouseCursor()
         if self.mustFill:
             pygame.display.flip()
         else:
@@ -200,7 +202,15 @@ class Pygame2D(pyui.core.RendererBase):
             pos2 = (self.windowPos[0] + x2, self.windowPos[1] + y2)
             pygame.draw.line(self.screen, color, pos1, pos2)
         return 0
+
+    def setMouseCursor(self, cursor, offsetX, offsetY):
+        self.mouseCursor = cursor
+        self.mouseOffset = (offsetX, offsetY)
+        self.loadImage(cursor)
         
+    def drawMouseCursor(self):
+        image = self.images[self.mouseCursor]
+        self.screen.blit(image, (self.mousePosition[0]-self.mouseOffset[0], self.mousePosition[1]-self.mouseOffset[1]) )
 
     def update(self):
         ## process all pending system events.
@@ -222,6 +232,7 @@ class Pygame2D(pyui.core.RendererBase):
                     
             elif event.type == MOUSEMOTION:
                 getDesktop().postUserEvent(pyui.locals.MOUSEMOVE, event.pos[0], event.pos[1])
+                self.mousePosition = event.pos
 
             elif event.type == KEYDOWN:
                 character = event.unicode
