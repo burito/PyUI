@@ -11,7 +11,7 @@ def orig():
 class RendererNeb(rendererBase.RendererBase):
     name = "Nebula"
 
-    def __init__(self, w, h, fullscreen):
+    def __init__(self, w, h, fullscreen, title='Nebula'):
         new('nglserver','/sys/servers/gfx')
         new('ninputserver', '/sys/servers/input')
 
@@ -51,18 +51,18 @@ class RendererNeb(rendererBase.RendererBase):
         sel('/')
         new('nroot','lib')
         sel('/lib')
-        shader=new ('nshadernode','npyuiuntex')
-	sel ('npyuiuntex')
+        shader=new ('nshadernode','nuiuntex')
+	sel ('nuiuntex')
         self.shaderInit(shader)
 	sel ('..')
-        texshader=new ('nshadernode','npyuitex')
-	sel ('npyuitex')
+        texshader=new ('nshadernode','nuitex')
+	sel ('nuitex')
         self.shaderInit(texshader)
         sel('/usr/scene')
-        new('npyui','pyui')
+        new('nui','pyui')
         self.pyui = sel('pyui')
-        set('setUntexturedShader','/lib/npyuiuntex')
-        set('setTextureShader','/lib/npyuitex')
+        set('setUntexturedShader','/lib/nuiuntex')
+        set('setTextureShader','/lib/nuitex')
 	tex=new ('ntexarraynode','tex')
         # evil, but hey! i could have done this the hard way
 
@@ -71,7 +71,7 @@ class RendererNeb(rendererBase.RendererBase):
         __builtins__['mouse1up'] = self.mouse1up
 
         self.drawlist = []
-        rendererBase.RendererBase.__init__(self, float(w), float(h),fullscreen)
+        rendererBase.RendererBase.__init__(self, float(w), float(h),fullscreen,title)
 
         self.drawBackMethod = self.clear
         
