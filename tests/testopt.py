@@ -9,7 +9,7 @@ Command line options to this are:
 import getopt
 import sys
 
-def parseCommandLine( width = 0, height = 0, renderer = "gl", fullscreen = 0 ):
+def parseCommandLine( width = 0, height = 0, renderer = "p3d", fullscreen = 0 ):
     """Get and validate command line args."""
     
     opts, pargs = getopt.getopt(sys.argv[1:], "w:h:f:r:")
