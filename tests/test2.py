@@ -44,9 +44,9 @@ class game:
         self.b6 = pyui.widgets.Button("Button 6", self.onButton)
         self.b7 = pyui.widgets.Button("Big Butt", self.onButton)
 
-        self.b3.bgColor = (255,0,0,255)
-        self.b4.bgColor = (255,0,255,255)
-        self.b5.bgColor = (255,255,0,255)
+        self.b3.bgColor = pyui.desktop.getRenderer().packColor(255,0,0,255)
+        self.b4.bgColor = pyui.desktop.getRenderer().packColor(255,0,255,255)
+        self.b5.bgColor = pyui.desktop.getRenderer().packColor(255,255,0,255)
         self.grid.addChild(self.b3, NORTH)
         self.grid.addChild(self.b5, WEST)
         self.grid.addChild(self.b7, CENTER)     
@@ -111,6 +111,7 @@ def run():
     import testopt
     opts = testopt.parseCommandLine(800, 600)
     pyui.init(*opts)
+    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)    
     g = game()
 
     pyui.run()

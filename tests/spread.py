@@ -14,9 +14,9 @@ def run():
     frame = 0
     t = time.time()
     pyui.init(*opts)
-
+    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)
     
-    for i in range(0,4):
+    for i in range(0,1):
 	w = pyui.widgets.Frame(50+i*20, 50+i*20, 400, 400, "spreadsheet")
         w.setLayout(pyui.layouts.GridLayoutManager(1,1,0))
         b = pyui.sheet.Sheet(onChanged, onInserted)

@@ -125,7 +125,7 @@ def run():
 
     cubeSetup()
     pyui.desktop.getRenderer().setBackMethod(drawCube)
-
+    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)
     createControl()
     con = pyui.dialogs.Console(0,500,780,80)
     pyui.run()

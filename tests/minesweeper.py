@@ -208,6 +208,7 @@ def run():
     done = 1
     global sx, sy
     pyui.init(sx, sy, "p3d")
+    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)    
     #pyui.core.setTheme(pyui.theme.uglyTheme())        
     g = game()
     while done:

@@ -12,7 +12,7 @@ class app:
         self.grid.setLayout( pyui.layouts.GridLayoutManager(3, 4) )
         
         self.b3 = pyui.widgets.Button("a long name", self.onButton)
-        self.b4 = pyui.widgets.ImageButton("max.bmp", self.onButton)
+        #self.b4 = pyui.widgets.ImageButton("max.bmp", self.onButton)
         self.s = pyui.widgets.SliderBar(self.onSlide, 40, 13)
         self.d = pyui.widgets.DropDownBox(9)
         self.d.addItem("item goes here", None)
@@ -36,13 +36,13 @@ class app:
         self.grid.addChild(self.l1)
         self.grid.addChild(self.l2)
         self.grid.addChild(self.l3)
-        self.grid.addChild(self.b4)
+        #self.grid.addChild(self.b4)
         self.grid.addChild(self.d)                
         self.grid.pack()
 
-        newFrame = pyui.widgets.Frame(0,505, 200,100, "close me")
+        #newFrame = pyui.widgets.Frame(0,505, 200,100, "close me")
 
-        pyui.desktop.getRenderer().setBackMethod(self.drawBack)
+        #pyui#.desktop.getRenderer().setBackMethod(self.drawBack)
         
     def drawBack(self):
         """Called every frame to draw the background.
@@ -83,6 +83,7 @@ def run():
     import testopt
     opts = testopt.parseCommandLine(800, 600)
     pyui.init(*opts)
+    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)    
     #pyui.core.setTheme(pyui.greenTheme.greenTheme(pyui.core.gRenderer, 640, 480))
     g = app()
 

@@ -75,6 +75,7 @@ def run():
     frame = 0
     t = time.time()
     pyui.init(*opts)
+    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)    
     w = pyui.widgets.Frame(50, 50, 600, 450, "clipme")
 
     g = pyui.grid.GridPanel(6,10)
