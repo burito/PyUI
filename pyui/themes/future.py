@@ -190,7 +190,7 @@ class FutureTheme(ThemeBase):
         self.drawGradient((rect[0] + xpos, rect[1] + 2, BARWIDTH, rect[3] - 4), 0, pyui.colors.grey, pyui.colors.white)
         self.shadeBorder((rect[0] + xpos, rect[1] + 2, BARWIDTH, rect[3] - 4), 3, 0)
 
-        self.renderer.drawText("%s/%s" % (position,range), (rect[0] + rect[2] - 40, rect[1]), pyui.colors.red)
+        #self.renderer.drawText("%s/%s" % (position,range), (rect[0] + rect[2] - 40, rect[1]), pyui.colors.red)
 
             
     def drawEdit(self, rect, text, hasFocus, caretPos, selectPos):

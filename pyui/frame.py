@@ -26,6 +26,7 @@ class Frame(Window):
         self.resizing = 0
         self.startX = 0
         self.startY = 0
+        self.hitList = []
         self.resizingCursor=0
         self.movingCursor=0
         self.backImage=None
@@ -108,7 +109,7 @@ class Frame(Window):
         if self.moving:
             mouseX = event.pos[0] - self.posX
             mouseY = event.pos[1] - self.posY
-            self.move( mouseX - self.startX, mouseY - self.startY)
+            self.frameMove( mouseX - self.startX, mouseY - self.startY)
             getRenderer().moveWindow(self.handle, self.posX, self.posY)
             return 1
         if self.resizing:
@@ -118,7 +119,7 @@ class Frame(Window):
                 mouseX = 64
             if mouseY < 64:
                 mouseY = 64
-            self.resize( self.width + mouseX - self.startX, self.height + mouseY - self.startY)
+            self.frameResize( self.width + mouseX - self.startX, self.height + mouseY - self.startY)
             (self.startX, self.startY) = (mouseX, mouseY)
             return 1
 
@@ -158,9 +159,7 @@ class Frame(Window):
         
         # check for closing            
         if regionId == pyui.locals.HIT_FRAME_CLOSE:
-            if hasattr(self, "onCloseButton"):
-                return self.onCloseButton()
-            return self._pyuiCloseButton()
+            return self.frameClose()
         
         # check for moving
         if regionId == pyui.locals.HIT_FRAME_MOVE:
@@ -221,6 +220,24 @@ class Frame(Window):
             if self.eventMap[event.type](event):
                 return 1
         return 0
+
+    def frameResize(self, w, h):
+        """Called when the resize corner is dragged.
+        Override this to customize resizing behavior.
+        """
+        self.resize(w,h)
+
+    def frameMove(self, x, y):
+        """Called when the frame is dragged around.
+        Override this to customize dragging behavior.
+        """
+        self.move(x, y)
+
+    def frameClose(self):
+        """Called when the frame close button is clicked
+        Override this to customize the close button behavior.
+        """
+        return self._pyuiCloseButton()
 
 class FrameMenuBar(Base):
     """Menu bar that fits at the top of the screen or the top of a window.

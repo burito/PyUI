@@ -163,10 +163,12 @@ class Base:
         while i > -1:
             child = self.children[i]
             if child.handleEvent(event):
+                #print child, "handled", event.type
                 return 1
             i = i  - 1
         if self.eventMap.has_key(event.type):
             if self.eventMap[event.type](event):
+                #print self, "handled", event.type                
                 return 1
 
         # popup handling here so it's not overridden with subclass event behavior
@@ -247,6 +249,8 @@ class Base:
         self.setDirty()
         for child in self.children:
             child.setShow(value)
+        if not value:
+            getDesktop().getTheme().setArrowCursor()            
         
     def __del__(self):
         #print "Deleting widget %s (%d)" % (self, self.id)

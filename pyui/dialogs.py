@@ -316,6 +316,7 @@ class Dialog(pyui.widgets.Frame):
         self.setShow(0)
         self.loseFocus()
         self.postEvent(locals.DIALOGCLOSED)
+        pyui.desktop.getTheme().setArrowCursor()
         if self.cb:
             self.cb(value)
 

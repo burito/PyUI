@@ -37,6 +37,22 @@ del __much
 class LayoutManager:
     """base class for all layout managers
     """
+
+    # common item alignment flags
+    ALIGN_MASK = 0xf000
+
+    XALIGN_MASK = 0x3000
+    XCENTER = 0x0000
+    XLEFT = 0x1000
+    XRIGHT = 0x2000
+    XFILL = 0x3000
+
+    YALIGN_MASK = 0xc000
+    YCENTER = 0x000
+    YTOP = 0x4000
+    YBOTTOM = 0x8000
+    YFILL = 0xc000
+
     def __init__(self):
         pass
 
@@ -69,24 +85,80 @@ class FlowLayoutManager(LayoutManager):
     def __init__(self,padding = 0):
         LayoutManager.__init__(self)
         self.padding = padding
-        self.lastX = self.padding
+        self.scanX = self.padding
         self.lastY = self.padding
         self.maxY = 0
         
     def begin(self):
-        self.lastX = self.padding
+        self.scanX = self.padding        
         self.lastY = self.padding
         self.maxY = 0
+        self.positions = []             # list of (x_position, row, width) tuples
+        self.row_heights = [0]          # tallest item in each row
+        
+    def scanChild(self, child, option):
+        # determine X position, and determine height of current row
+
+        new_row = 0
+        width, height = child.getPreferredSize()
+
+        # go to a new line if specified or if this line is out of space
+        if option == None:
+            option = 0
+        if (((option & ~self.ALIGN_MASK) == self.NEWLINE
+             and self.scanX > self.padding)
+            or (self.scanX > 0
+                and self.scanX + width > self.panel.width)):
+            #newline
+            self.scanX = self.padding
+            self.row_heights.append(0)
+            new_row = 1
+
+        # preserve data for use during placement
+        self.positions.append((self.scanX, new_row, width))
+        self.scanX = self.scanX + self.padding + width
+        self.row_heights[-1] = max(self.row_heights[-1], height)
         
     def placeChild(self, child, option):
-        if (option == self.NEWLINE and self.lastX > self.padding) or (self.lastX > 0 and self.lastX + child.width > self.panel.width):
-            self.lastX = self.padding
-            self.lastY = self.maxY + self.padding
+        # determine Y position and move child to its position
+        
+        # get next child data from head of list
+        x_position, new_row, width = self.positions[0]
+        del self.positions[0]
+
+        # go to next row if indicated
+        if new_row:
+            self.lastY = self.row_height + self.padding
+            del self.row_heights[0]
+        self.row_height = self.row_heights[0]
+
+        # move and size child based on alignment options
+        if option == None:
+            option = 0
+        yalign_option = option & self.YALIGN_MASK
+        max_height = child.getMaximumSize()[1]
+
+        if max_height >= self.row_height or yalign_option == self.YFILL:
+            child.moveto(x_position, self.lastY)
+            child.resize(width, self.row_height)
+        elif yalign_option == self.YCENTER:
+            child.resize(width, max_height)
+            child.moveto(x_position, self.lastY + (self.row_height - child.height) // 2)
+        elif yalign_option == self.YBOTTOM:
+            child.resize(width, max_height)
+            child.moveto(x_position, self.lastY + self.row_height - child.height)
+        elif yalign_option == self.YTOP:
+            child.resize(width, max_height)
+            child.moveto(x_position, self.lastY)
+        
+##       if (option == self.NEWLINE and self.lastX > self.padding) or (self.lastX > 0 and self.lastX + child.width > self.panel.width):
+##            self.lastX = self.padding
+##            self.lastY = self.maxY + self.padding
             
-        child.moveto(self.lastX, self.lastY)
-        self.lastX = self.lastX + self.padding + child.width
-        if self.lastY + child.height > self.maxY:
-            self.maxY = self.lastY + child.height
+##        child.moveto(self.lastX, self.lastY)
+##        self.lastX = self.lastX + self.padding + child.width
+##        if self.lastY + child.height > self.maxY:
+##            self.maxY = self.lastY + child.height
 
     def canResize(self):
         return false    

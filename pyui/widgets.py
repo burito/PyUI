@@ -1418,6 +1418,7 @@ class FormPanel(Panel):
     fieldTypes = [
         "string",
         "int",
+        "float",
         "text",
         "password",
         "slider",
@@ -1505,6 +1506,9 @@ class FormPanel(Panel):
     def create_int(self, dummy):
         return NumberEdit("", 12, self._pyuiEdit, 0)
 
+    def create_float(self, dummy):
+        return NumberEdit("", 12, self._pyuiEdit, 0)
+
     def create_text(self, size):
         #NOTE: make this a LineDisplay that can be edited...
         return Edit("", size, self._pyuiEdit)
@@ -1532,6 +1536,12 @@ class FormPanel(Panel):
         else:
             formWidget.setText("%s" % value)
 
+    def populate_float(self, formWidget, value):
+        if not value:
+            formWidget.setText("None")
+        else:
+            formWidget.setText("%.2f" % value)
+        
     populate_password = populate_string
     populate_int = populate_string
     populate_text = populate_string
@@ -1576,6 +1586,9 @@ class FormPanel(Panel):
     def process_int(self, formWidget, fieldName):
         setattr(self.object, fieldName, int(formWidget.text) )
         
+    def process_float(self, formWidget, fieldName):
+        setattr(self.object, fieldName, float(formWidget.text) )
+
     ##### Widget handler methods ######
     
     def _pyuiSlide(self, value):
