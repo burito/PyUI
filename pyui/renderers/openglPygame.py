@@ -17,9 +17,6 @@
 """PyGame openGL renderer
 """
 
-import sys
-import time
-
 import pyui
 import pygame
 from pyui.renderers import openglBase
@@ -46,7 +43,6 @@ class OpenGLPygame(openglBase.OpenGLBase):
 
         pygame.key.set_mods(locals.KMOD_NONE)
         pygame.mouse.set_visible(0)
-        #self.defaultFont = GLFont("times new roman", 12, 0)
 
     def draw(self, windows):
         apply(self.drawBackMethod, self.drawBackArgs)        
@@ -70,12 +66,13 @@ class OpenGLPygame(openglBase.OpenGLBase):
         self.setWindowOrigin(0,0)
         self.drawMouseCursor()
         self.teardown2D()
-    
         pygame.display.flip()
 
         self.mustFill = 0
         self.dirtyRects = []
-        
+
+    def readTimer(self):
+        return pygame.time.get_ticks()/1000.0
 
     def update(self):
         """PyGame event handling.
@@ -292,7 +289,8 @@ class GLFont:
             width = self.charInfo[ord(c)][0]
             glCallList( self.displayLists[ord(c)])
             glTranslate(width,0,0)
-        glPopMatrix()                            
+        glPopMatrix()
+        glDisable(GL_TEXTURE_2D)        
 
 
     def cacheText(self, text):
@@ -301,7 +299,6 @@ class GLFont:
         #glTranslate(xPos,yPos,0)
         if not self.textCache.has_key(text):
             foo = glGenLists(1)
-            print "foo = ", foo
             glNewList(foo, GL_COMPILE)
             glPushMatrix()            
 
@@ -329,7 +326,7 @@ fontRegistery = {
     "courier new":"cour.ttf",
     "courier":"cour.ttf",    
     "impact":"impact.ttf",
-    "microsoft sans serif":"micross.ttf",
+    "arial":"arial.ttf",
     "times new roman":"times.ttf",
     "times":"times.ttf"
     }

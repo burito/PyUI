@@ -1579,187 +1579,6 @@ class ViewPanel(Panel):
     def setEffect(self, effectName):
         getRenderer().setWindowEffect(self.windowHandle, effectName)
 
-    
-class Frame(Window):
-    """A frame is a window that has a titlebar and borders. it is resizable and movable by dragging the titlebar.
-    """
-    def __init__(self, x, y, w, h, title, topmost = 0):
-        self.theme = getTheme()
-        self.innerWidth = w
-        self.innerHeight = h
-        self.title = title
-
-        self.panelOffsetLeft = 0
-        self.panelOffsetTop = 0
-        self.panelOffsetRight = 0
-        self.panelOffsetBottom = 0            
-        
-        Window.__init__(self, x, y, w, h, topmost)
-        self.setTitle(self.title)
-        
-        self.panelOffsetLeft = self.theme.getFrameBorderLeft()
-        self.panelOffsetTop = self.theme.getFrameBorderTop()
-        self.panelOffsetRight = self.theme.getFrameBorderRight()
-        self.panelOffsetBottom = self.theme.getFrameBorderBottom()            
-            
-        self._panel.moveto(self.panelOffsetLeft, self.panelOffsetTop)
-        w += self.panelOffsetLeft + self.panelOffsetRight
-        h += self.panelOffsetTop + self.panelOffsetBottom
-            
-        self.resize(w, h)
-        self.registerEvent(pyui.locals.LMOUSEBUTTONDOWN, self._pyuiMouseDown)
-        self.registerEvent(pyui.locals.LMOUSEBUTTONUP, self._pyuiMouseUp)
-        self.registerEvent(pyui.locals.MOUSEMOVE, self._pyuiMouseMotion)
-        self.moving = 0
-        self.resizing = 0
-        self.startX = 0
-        self.startY = 0
-        self.resizingCursor=0
-        self.movingCursor=0
-        self.backImage=None
-
-        self.menuBar = None
-
-    def addMenuBar(self, menuBar):
-        self.menuBar = menuBar
-        
-    def setTitle(self, title):
-        self.title = title
-
-    def setBackImage(self, filename):
-        self.backImage = filename
-        #getRenderer().loadImage(filename)
-        
-    def draw(self, renderer):
-        """Draws to the actual frame if the renderer requires it.
-        """
-        if not self.show:
-            return
-        self.hitList = getTheme().drawFrame( (0,0,self.width, self.height), self.title, self.backImage)
-        Window.draw(self, renderer)        
-        
-    def replacePanel(self, panel):
-        Window.replacePanel(self, panel)
-        self._panel.moveto(self.panelOffsetLeft, self.panelOffsetTop)
-        self._panel.resize(self.innerWidth, self.innerHeight)
-
-
-    def hitFrameRegion(self, pos):
-        # put hit position in window relative coords
-        x = pos[0] - self.rect[0]
-        y = pos[1] - self.rect[1]
-
-        # scan through hit regions        
-        for (regionId, rect) in self.hitList:
-            if x >= rect[0] and y >= rect[1] and x < rect[0]+rect[2] and y < rect[1]+rect[3]:
-                return regionId
-        else:
-            return None
-
-    def _pyuiMouseMotion(self, event):
-        if self.moving:
-            mouseX = event.pos[0] - self.posX
-            mouseY = event.pos[1] - self.posY
-            self.move( mouseX - self.startX, mouseY - self.startY)
-            getRenderer().moveWindow(self.handle, self.posX, self.posY)
-            return 1
-        if self.resizing:
-            mouseX = event.pos[0] - self.posX
-            mouseY = event.pos[1] - self.posY
-            if mouseX < 64:
-                mouseX = 64
-            if mouseY < 64:
-                mouseY = 64
-            self.resize( self.width + mouseX - self.startX, self.height + mouseY - self.startY)
-            (self.startX, self.startY) = (mouseX, mouseY)
-            return 1
-
-        # set the proper cursor
-        if event.pos[0] > self.posX + self.innerWidth and event.pos[1] > self.posY + self.innerHeight:
-            self.resizingCursor=1
-            self.theme.setResizeCursor()
-        elif self.resizingCursor:
-            self.resizingCursor=0
-            self.theme.setArrowCursor()
-            
-        if event.pos[0] < self.posX +self.width- 32 and event.pos[1] < self.posY + self.theme.getFrameBorderTop()-8:
-            self.movingCursor = 1
-            self.theme.setMovingCursor()
-        elif self.movingCursor:
-            self.movingCursor = 0
-            self.theme.setArrowCursor()
-            
-        if not self.hit(event.pos):
-            if self.resizingCursor and not self.resizing:
-                self.resizingCursor=0
-                self.theme.setArrowCursor()
-            if self.movingCursor and not self.moving:
-                self.movingCursor=0
-                self.theme.setArrowCursor()
-            return 0
-        else:
-            return 1
-        
-    def _pyuiMouseDown(self, event):
-        if not self.hit(event.pos):
-            return 0
-
-        self.getFocus()
-        regionId = self.hitFrameRegion(event.pos)
-        
-        # check for closing            
-        if regionId == pyui.locals.HIT_FRAME_CLOSE:
-            if hasattr(self, "onCloseButton"):
-                return self.onCloseButton()
-            return self._pyuiCloseButton()
-        
-        # check for moving
-        if regionId == pyui.locals.HIT_FRAME_MOVE:
-            self.moving  = 1
-            self.startX = event.pos[0] - self.posX
-            self.startY = event.pos[1] - self.posY
-            return 1
-        
-        # check for resizing
-        if regionId == pyui.locals.HIT_FRAME_RESIZE_BOTTOM_RIGHT:
-            self.resizing = 1
-            self.startX = event.pos[0] - self.posX
-            self.startY = event.pos[1] - self.posY
-            return 1
-
-        return 1
-
-    def _pyuiMouseUp(self, event):
-        if self.moving:
-            self.moving = 0
-            return 1
-        if self.resizing:
-            self.resizing = 0
-            return 1
-        if self.resizingCursor:
-            self.resizingCursor=0
-            self.theme.setArrowCursor()                                        
-        if not self.hit(event.pos):
-            return 0
-        return 1
-
-    def resize(self, w, h):
-        if w < 64:
-            w = 64
-        if h < 64:
-            h = 64
-        Base.resize(self, w, h)
-        self.innerWidth = w - self.panelOffsetLeft - self.panelOffsetRight
-        self.innerHeight = h - self.panelOffsetTop - self.panelOffsetBottom
-        self._panel.moveto(self.panelOffsetLeft, self.panelOffsetTop)
-        self._panel.resize(self.innerWidth, self.innerHeight)
-
-    def _pyuiCloseButton(self):
-        print "Destroying window", self
-        self.theme.setArrowCursor()        
-        self.destroy()
-        return 1            
-        
 
 class MenuItem:
     """Used by menu widget to track items. Can have an icon 16x16 in size.
@@ -2073,15 +1892,6 @@ class MenuBar(Window):
         self.hitList = None
         Window.destroy(self)
 
-class ViewWindow(Frame):
-    """A window that contains a ViewPanel
-    """
-    def __init__(self, x, y, w, h, world):
-        Frame.__init__(self, x, y, w, h, "3d!")
-        panel = ViewPanel(world)
-        self.replacePanel(panel)
-        self.world = world
-
 class TooltipWindow(Window):
     """A window that displays tooltips.
     """
@@ -2258,4 +2068,16 @@ class MenuBarWidget(Base):
         self.menus = None
         self.hitList = None
         Base.destroy(self)
+
+
+from frame import Frame, FrameMenu, FrameMenuBar
+
+class ViewWindow(Frame):
+    """A window that contains a ViewPanel
+    """
+    def __init__(self, x, y, w, h, world):
+        Frame.__init__(self, x, y, w, h, "3d!")
+        panel = ViewPanel(world)
+        self.replacePanel(panel)
+        self.world = world
 

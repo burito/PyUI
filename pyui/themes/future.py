@@ -32,7 +32,7 @@ class FutureTheme(ThemeBase):
     """ Futuristic looking theme.
     """
 
-    def __init__(self, renderer, fontFace="times", fontSize=12, fontFlags=0):
+    def __init__(self, renderer, fontFace="arial", fontSize=12, fontFlags=0):
         ThemeBase.__init__(self, renderer, fontFace, fontSize, fontFlags)        
 
         # theme colors        
@@ -324,10 +324,10 @@ class FutureTheme(ThemeBase):
         return rect
 
     def drawMenuBarItem(self, rect, title, selected):
-        title = "   " + title + "   "
+        #title = "  " + title + "  "
         (w,h) = self.renderer.getTextSize(title)
         if selected:
-            self.renderer.drawRect(self.bgMenuSelect, (rect[0], rect[1], w, rect[3]))
+            self.draw3DRect(rect, self.bgMenuSelect, 1)
             self.renderer.drawText(title, (rect[0], rect[1]), self.fgColor)
         else:
             self.renderer.drawText(title, (rect[0], rect[1]), self.fgColor)
@@ -345,11 +345,11 @@ class FutureTheme(ThemeBase):
     def drawMenuItem(self, rect, title, selected, icon = None):
         iconSize = 12
         if selected:
-            self.renderer.drawRect(self.bgMenuSelect, (rect[0], rect[1], rect[2], self.defaultTextHeight))
+            self.draw3DRect((rect[0], rect[1], rect[2], self.defaultTextHeight), self.bgMenuSelect, 1)
         if title == '-':
             self.draw3DRect((rect[0], rect[1] + self.defaultTextHeight / 2- 1, rect[2], 2), self.bgMenuPanel, 1)
         else:
-            self.renderer.drawText(title, (rect[0] + iconSize, rect[1]), self.fgColor)
+            self.renderer.drawText(title, (rect[0] + iconSize, rect[1]+4), self.fgColor)
         if icon:
             self.renderer.drawImage((rect[0], rect[1]+(self.defaultTextHeight - iconSize) / 2, iconSize, iconSize), icon)
         return (rect[0], rect[1], rect[2], self.defaultTextHeight)

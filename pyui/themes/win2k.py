@@ -30,7 +30,7 @@ class Win2kTheme(ThemeBase):
     """A theme that looks like win2k
     """
 
-    def __init__(self, renderer, fontFace="microsoft sans serif", fontSize=10, fontFlags=0):
+    def __init__(self, renderer, fontFace="arial", fontSize=12, fontFlags=0):
         ThemeBase.__init__(self, renderer, fontFace, fontSize, fontFlags)
 
         # theme colors        

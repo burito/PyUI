@@ -88,7 +88,7 @@ class RendererBase:
         while getDesktop() and getDesktop().running:
 
             self.frame = self.frame + 1
-            now = time.time()
+            now = self.readTimer()
             if now - self.last >= 1:
                 self.last = now
                 print "FPS: %d" % self.frame

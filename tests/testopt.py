@@ -28,4 +28,4 @@ def parseCommandLine( width = 0, height = 0, renderer = "p3d", fullscreen = 0 ):
             fullscreen = int(val)
             
     # parsed args successfully
-    return (width, height, renderer, fullscreen)
+    return (width, height, renderer, fullscreen, "Test")

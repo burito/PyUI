@@ -49,7 +49,7 @@ class ThemeBase:
         self.defaultFontFlags = fontFlags
         self.defaultFont = renderer.createFont(fontFace, fontSize, fontFlags)
         #(self.defaultTextWidth, self.defaultTextHeight) = renderer.getTextSize("M", self.defaultFont)
-        self.defaultTextHeight = fontSize*2.5
+        self.defaultTextHeight = fontSize*2
 
         # setup widget offsets
         self.frameBorderLeft = 4

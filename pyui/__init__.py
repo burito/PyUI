@@ -22,7 +22,7 @@ from core import draw
 from core import run
 
 ## imports of all modules
-import core, locals, desktop, base, widgets, layouts, dialogs, viewer, tree, grid, entry, sheet
+import core, locals, desktop, base, widgets, frame, layouts, dialogs, viewer, tree, grid, entry, sheet
 
 from core import gRenderer
 
