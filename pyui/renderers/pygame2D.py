@@ -30,8 +30,8 @@ class Pygame2D(pyui.core.RendererBase):
     """
     name = "2D"
     
-    def __init__(self, w, h, fullscreen):
-        pyui.core.RendererBase.__init__(self, w, h, fullscreen)
+    def __init__(self, w, h, fullscreen, title):
+        pyui.core.RendererBase.__init__(self, w, h, fullscreen, title)
         pygame.init()
         if fullscreen:
             self.screen = pygame.display.set_mode((w, h), FULLSCREEN | SWSURFACE)

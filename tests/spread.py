@@ -16,14 +16,15 @@ def run():
     pyui.init(*opts)
 
     
-    w = pyui.widgets.Frame(50, 50, 400, 400, "spreadsheet")
-    w.setLayout(pyui.layouts.GridLayoutManager(1,1,0))
-    b = pyui.sheet.Sheet(onChanged, onInserted)
-    b.setColumnTitle(3,"A very Long one")
-    b.setColumnTitle(2,"Table name")
-    b.setColumnTitle(1,"Something goes here....")
-    w.addChild(b)
-    w.pack()
+    for i in range(0,4):
+	w = pyui.widgets.Frame(50+i*20, 50+i*20, 400, 400, "spreadsheet")
+        w.setLayout(pyui.layouts.GridLayoutManager(1,1,0))
+        b = pyui.sheet.Sheet(onChanged, onInserted)
+        b.setColumnTitle(3,"A very Long one")
+        b.setColumnTitle(2,"Table name")
+        b.setColumnTitle(1,"Something goes here....")
+        w.addChild(b)
+        w.pack()
 
     pyui.run()
 
