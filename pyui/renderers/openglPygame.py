@@ -43,6 +43,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
 
         pygame.key.set_mods(locals.KMOD_NONE)
         pygame.mouse.set_visible(0)
+        self.imageSizes = {}
 
     def draw(self, windows):
         apply(self.drawBackMethod, self.drawBackArgs)        
@@ -143,6 +144,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
         data = pygame.image.tostring(surface, "RGBA", 1)
         ix = surface.get_width()
         iy = surface.get_height()
+        self.imageSizes[filename] = (ix,iy)
         
         # Create Texture
         texture = glGenTextures(1)
@@ -159,14 +161,38 @@ class OpenGLPygame(openglBase.OpenGLBase):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
+    def getImageSize(self, filename):
+        self.loadTexture(filename)
+        return self.imageSizes.get(filename, (0,0) )
+
     def createFont(self, face, size, flags):
         newFont = GLFont(face, size, flags)
         return newFont
 
-    def drawText(self, text, pos, color, font = None):
+    def drawText(self, text, pos, color, font = None, flipped = 0):
+        """the flipped flag is for drawing text in the upside-down
+        coordinate space of cartesian space, rather than UI space.
+        It flips the Y axis before drawing.
+        """
         if not font:
             font = getTheme().defaultFont
+            
+        if flipped:
+            glMatrixMode(GL_PROJECTION)                        
+            glPushMatrix()
+            glLoadIdentity()
+            glOrtho( 0, self.width, self.height, 0, -1, 1 )
+            glMatrixMode(GL_MODELVIEW)
+            glPushMatrix()
+            glLoadIdentity()            
+            
         font.drawText(text, pos, color)
+
+        if flipped:
+            glPopMatrix()
+            glMatrixMode(GL_PROJECTION)                        
+            glPopMatrix()
+            glMatrixMode(GL_MODELVIEW)                        
 
     def getTextSize(self, text, font = None):
         if not font:
@@ -186,7 +212,7 @@ class GLFont:
         self.charInfo = []  # tuples of (width, height, texture coordinates) for each character
         self.createGlyphs()
 
-    def createGlyphs(self):
+    def createGlyphs(self ):
         testSurface = self.font.render("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRTSUTWXYZ", 1, (255,255,255,255))
         charWidth = testSurface.get_width()
         charHeight = testSurface.get_height()
@@ -255,6 +281,8 @@ class GLFont:
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
         # create display lists for each of the characters
+        top = 1
+        bottom = 3
         self.displayLists = []
         for (width, height, coords) in self.charInfo:
             if not width and not height:
@@ -263,13 +291,13 @@ class GLFont:
             newList = glGenLists(1)
             glNewList(newList, GL_COMPILE)
             glBegin(GL_QUADS)
-            glTexCoord2f(coords[0], coords[1])
+            glTexCoord2f(coords[0], coords[top])
             glVertex2i(0, 0)
-            glTexCoord2f(coords[2], coords[1])
+            glTexCoord2f(coords[2], coords[top])
             glVertex2i(width, 0)
-            glTexCoord2f(coords[2], coords[3])
+            glTexCoord2f(coords[2], coords[bottom])
             glVertex2i(width, height)
-            glTexCoord2f(coords[0], coords[3])
+            glTexCoord2f(coords[0], coords[bottom])
             glVertex2i(0, height)
             glEnd()
             glEndList()
