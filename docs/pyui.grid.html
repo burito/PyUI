@@ -10,7 +10,7 @@ TT { font-family: lucidatypewriter, lucida console, courier }
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="pyui.html"><font color="#ffffff">pyui</font></a>.grid</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/ninja/projects/pyui/pyui/grid.py">c:\ninja\projects\pyui\pyui\grid.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C|/projects/pyuicvs/pyui/grid.py">c:\projects\pyuicvs\pyui\grid.py</a></font></td></tr></table>
     <p><tt>A&nbsp;scrollable&nbsp;grid&nbsp;class&nbsp;for&nbsp;PyUI.&nbsp;The&nbsp;elements&nbsp;in&nbsp;the&nbsp;grid&nbsp;are&nbsp;PyUI&nbsp;widgets.</tt></p>
 
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -29,7 +29,7 @@ TT { font-family: lucidatypewriter, lucida console, courier }
     
 <tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;&nbsp;</td>
 <td width="100%"><dl>
-<dt><font face="helvetica, arial"><a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>(<a href="pyui.widgets.html#Base">pyui.widgets.Base</a>)
+<dt><font face="helvetica, arial"><a href="pyui.base.html#Panel">pyui.base.Panel</a>(<a href="pyui.base.html#Base">pyui.base.Base</a>)
 </font></dt><dd>
 <dl>
 <dt><font face="helvetica, arial"><a href="pyui.grid.html#CellPanel">CellPanel</a>
@@ -43,15 +43,15 @@ TT { font-family: lucidatypewriter, lucida console, courier }
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="CellPanel">class <strong>CellPanel</strong></a>(<a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>)</font></td></tr>
+<font color="#000000" face="helvetica, arial"><a name="CellPanel">class <strong>CellPanel</strong></a>(<a href="pyui.base.html#Panel">pyui.base.Panel</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>The&nbsp;inner&nbsp;cell&nbsp;grid&nbsp;of&nbsp;a&nbsp;<a href="#GridPanel">GridPanel</a>.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="pyui.grid.html#CellPanel">CellPanel</a></dd>
-<dd><a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a></dd>
-<dd><a href="pyui.widgets.html#Base">pyui.widgets.Base</a></dd>
+<dd><a href="pyui.base.html#Panel">pyui.base.Panel</a></dd>
+<dd><a href="pyui.base.html#Base">pyui.base.Base</a></dd>
 </dl>
 <hr>
 Methods defined here:<br>
@@ -93,7 +93,9 @@ Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;ob
 If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:<br>
+Methods inherited from <a href="pyui.base.html#Panel">pyui.base.Panel</a>:<br>
+<dl><dt><a name="CellPanel-_pyuiKeyDown"><strong>_pyuiKeyDown</strong></a>(self, event)</dt></dl>
+
 <dl><dt><a name="CellPanel-addChild"><strong>addChild</strong></a>(self, child, option<font color="#909090">=None</font>)</dt></dl>
 
 <dl><dt><a name="CellPanel-destroy"><strong>destroy</strong></a>(self)</dt></dl>
@@ -102,14 +104,12 @@ Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:
 
 <dl><dt><a name="CellPanel-nextTab"><strong>nextTab</strong></a>(self, step<font color="#909090">=1</font>)</dt></dl>
 
-<dl><dt><a name="CellPanel-onKeyDown"><strong>onKeyDown</strong></a>(self, event)</dt></dl>
-
 <dl><dt><a name="CellPanel-pack"><strong>pack</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="CellPanel-setLayout"><strong>setLayout</strong></a>(self, layout)</dt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Methods inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><a name="CellPanel-__del__"><strong>__del__</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="CellPanel-addPopup"><strong>addPopup</strong></a>(self, popup)</dt></dl>
@@ -154,7 +154,7 @@ if&nbsp;it&nbsp;is&nbsp;populated.</tt></dd></dl>
 <dl><dt><a name="CellPanel-unregisterEvent"><strong>unregisterEvent</strong></a>(self, eventType)</dt><dd><tt>Remove&nbsp;handler&nbsp;for&nbsp;an&nbsp;event</tt></dd></dl>
 
 <hr>
-Data and non-method functions inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Data and non-method functions inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><strong>canTab</strong> = 0<dd><tt>int(x[,&nbsp;base])&nbsp;-&gt;&nbsp;integer<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;string&nbsp;or&nbsp;number&nbsp;to&nbsp;an&nbsp;integer,&nbsp;if&nbsp;possible.&nbsp;&nbsp;A&nbsp;floating&nbsp;point<br>
@@ -163,19 +163,24 @@ representation&nbsp;of&nbsp;a&nbsp;floating&nbsp;point&nbsp;number!)&nbsp;&nbsp;
 the&nbsp;optional&nbsp;base.&nbsp;&nbsp;It&nbsp;is&nbsp;an&nbsp;error&nbsp;to&nbsp;supply&nbsp;a&nbsp;base&nbsp;when&nbsp;converting&nbsp;a<br>
 non-string.</tt></dl>
 
+<dl><dt><strong>widgetLabel</strong> = 'Base'<dd><tt>str(object)&nbsp;-&gt;&nbsp;string<br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;object.<br>
+If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
+
 </td></tr></table> 
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="ColumnHeaders">class <strong>ColumnHeaders</strong></a>(<a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>)</font></td></tr>
+<font color="#000000" face="helvetica, arial"><a name="ColumnHeaders">class <strong>ColumnHeaders</strong></a>(<a href="pyui.base.html#Panel">pyui.base.Panel</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>The&nbsp;column&nbsp;headers&nbsp;for&nbsp;the&nbsp;<a href="#GridPanel">GridPanel</a>.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="pyui.grid.html#ColumnHeaders">ColumnHeaders</a></dd>
-<dd><a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a></dd>
-<dd><a href="pyui.widgets.html#Base">pyui.widgets.Base</a></dd>
+<dd><a href="pyui.base.html#Panel">pyui.base.Panel</a></dd>
+<dd><a href="pyui.base.html#Base">pyui.base.Base</a></dd>
 </dl>
 <hr>
 Methods defined here:<br>
@@ -196,7 +201,9 @@ Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;ob
 If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:<br>
+Methods inherited from <a href="pyui.base.html#Panel">pyui.base.Panel</a>:<br>
+<dl><dt><a name="ColumnHeaders-_pyuiKeyDown"><strong>_pyuiKeyDown</strong></a>(self, event)</dt></dl>
+
 <dl><dt><a name="ColumnHeaders-addChild"><strong>addChild</strong></a>(self, child, option<font color="#909090">=None</font>)</dt></dl>
 
 <dl><dt><a name="ColumnHeaders-destroy"><strong>destroy</strong></a>(self)</dt></dl>
@@ -207,8 +214,6 @@ Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:
 
 <dl><dt><a name="ColumnHeaders-nextTab"><strong>nextTab</strong></a>(self, step<font color="#909090">=1</font>)</dt></dl>
 
-<dl><dt><a name="ColumnHeaders-onKeyDown"><strong>onKeyDown</strong></a>(self, event)</dt></dl>
-
 <dl><dt><a name="ColumnHeaders-pack"><strong>pack</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="ColumnHeaders-resize"><strong>resize</strong></a>(self, w, h)</dt></dl>
@@ -216,7 +221,7 @@ Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:
 <dl><dt><a name="ColumnHeaders-setLayout"><strong>setLayout</strong></a>(self, layout)</dt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Methods inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><a name="ColumnHeaders-__del__"><strong>__del__</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="ColumnHeaders-addPopup"><strong>addPopup</strong></a>(self, popup)</dt></dl>
@@ -261,7 +266,7 @@ if&nbsp;it&nbsp;is&nbsp;populated.</tt></dd></dl>
 <dl><dt><a name="ColumnHeaders-unregisterEvent"><strong>unregisterEvent</strong></a>(self, eventType)</dt><dd><tt>Remove&nbsp;handler&nbsp;for&nbsp;an&nbsp;event</tt></dd></dl>
 
 <hr>
-Data and non-method functions inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Data and non-method functions inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><strong>canTab</strong> = 0<dd><tt>int(x[,&nbsp;base])&nbsp;-&gt;&nbsp;integer<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;string&nbsp;or&nbsp;number&nbsp;to&nbsp;an&nbsp;integer,&nbsp;if&nbsp;possible.&nbsp;&nbsp;A&nbsp;floating&nbsp;point<br>
@@ -270,11 +275,16 @@ representation&nbsp;of&nbsp;a&nbsp;floating&nbsp;point&nbsp;number!)&nbsp;&nbsp;
 the&nbsp;optional&nbsp;base.&nbsp;&nbsp;It&nbsp;is&nbsp;an&nbsp;error&nbsp;to&nbsp;supply&nbsp;a&nbsp;base&nbsp;when&nbsp;converting&nbsp;a<br>
 non-string.</tt></dl>
 
+<dl><dt><strong>widgetLabel</strong> = 'Base'<dd><tt>str(object)&nbsp;-&gt;&nbsp;string<br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;object.<br>
+If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
+
 </td></tr></table> 
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="GridPanel">class <strong>GridPanel</strong></a>(<a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>)</font></td></tr>
+<font color="#000000" face="helvetica, arial"><a name="GridPanel">class <strong>GridPanel</strong></a>(<a href="pyui.base.html#Panel">pyui.base.Panel</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>A&nbsp;scrollable&nbsp;grid&nbsp;class.&nbsp;I&nbsp;have&nbsp;a&nbsp;grid&nbsp;of&nbsp;cells&nbsp;of&nbsp;which&nbsp;only&nbsp;some&nbsp;will<br>
@@ -282,8 +292,8 @@ be&nbsp;visible&nbsp;at&nbsp;any&nbsp;time.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="pyui.grid.html#GridPanel">GridPanel</a></dd>
-<dd><a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a></dd>
-<dd><a href="pyui.widgets.html#Base">pyui.widgets.Base</a></dd>
+<dd><a href="pyui.base.html#Panel">pyui.base.Panel</a></dd>
+<dd><a href="pyui.base.html#Base">pyui.base.Base</a></dd>
 </dl>
 <hr>
 Methods defined here:<br>
@@ -320,7 +330,9 @@ Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;ob
 If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:<br>
+Methods inherited from <a href="pyui.base.html#Panel">pyui.base.Panel</a>:<br>
+<dl><dt><a name="GridPanel-_pyuiKeyDown"><strong>_pyuiKeyDown</strong></a>(self, event)</dt></dl>
+
 <dl><dt><a name="GridPanel-addChild"><strong>addChild</strong></a>(self, child, option<font color="#909090">=None</font>)</dt></dl>
 
 <dl><dt><a name="GridPanel-destroy"><strong>destroy</strong></a>(self)</dt></dl>
@@ -331,14 +343,12 @@ Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:
 
 <dl><dt><a name="GridPanel-nextTab"><strong>nextTab</strong></a>(self, step<font color="#909090">=1</font>)</dt></dl>
 
-<dl><dt><a name="GridPanel-onKeyDown"><strong>onKeyDown</strong></a>(self, event)</dt></dl>
-
 <dl><dt><a name="GridPanel-pack"><strong>pack</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="GridPanel-setLayout"><strong>setLayout</strong></a>(self, layout)</dt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Methods inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><a name="GridPanel-__del__"><strong>__del__</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="GridPanel-addPopup"><strong>addPopup</strong></a>(self, popup)</dt></dl>
@@ -383,7 +393,7 @@ if&nbsp;it&nbsp;is&nbsp;populated.</tt></dd></dl>
 <dl><dt><a name="GridPanel-unregisterEvent"><strong>unregisterEvent</strong></a>(self, eventType)</dt><dd><tt>Remove&nbsp;handler&nbsp;for&nbsp;an&nbsp;event</tt></dd></dl>
 
 <hr>
-Data and non-method functions inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Data and non-method functions inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><strong>canTab</strong> = 0<dd><tt>int(x[,&nbsp;base])&nbsp;-&gt;&nbsp;integer<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;string&nbsp;or&nbsp;number&nbsp;to&nbsp;an&nbsp;integer,&nbsp;if&nbsp;possible.&nbsp;&nbsp;A&nbsp;floating&nbsp;point<br>
@@ -392,19 +402,24 @@ representation&nbsp;of&nbsp;a&nbsp;floating&nbsp;point&nbsp;number!)&nbsp;&nbsp;
 the&nbsp;optional&nbsp;base.&nbsp;&nbsp;It&nbsp;is&nbsp;an&nbsp;error&nbsp;to&nbsp;supply&nbsp;a&nbsp;base&nbsp;when&nbsp;converting&nbsp;a<br>
 non-string.</tt></dl>
 
+<dl><dt><strong>widgetLabel</strong> = 'Base'<dd><tt>str(object)&nbsp;-&gt;&nbsp;string<br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;object.<br>
+If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
+
 </td></tr></table> 
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
-<font color="#000000" face="helvetica, arial"><a name="RowHeaders">class <strong>RowHeaders</strong></a>(<a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>)</font></td></tr>
+<font color="#000000" face="helvetica, arial"><a name="RowHeaders">class <strong>RowHeaders</strong></a>(<a href="pyui.base.html#Panel">pyui.base.Panel</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
 <td colspan=2><tt>The&nbsp;row&nbsp;headers&nbsp;for&nbsp;the&nbsp;<a href="#GridPanel">GridPanel</a>.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="pyui.grid.html#RowHeaders">RowHeaders</a></dd>
-<dd><a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a></dd>
-<dd><a href="pyui.widgets.html#Base">pyui.widgets.Base</a></dd>
+<dd><a href="pyui.base.html#Panel">pyui.base.Panel</a></dd>
+<dd><a href="pyui.base.html#Base">pyui.base.Base</a></dd>
 </dl>
 <hr>
 Methods defined here:<br>
@@ -425,7 +440,9 @@ Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;ob
 If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:<br>
+Methods inherited from <a href="pyui.base.html#Panel">pyui.base.Panel</a>:<br>
+<dl><dt><a name="RowHeaders-_pyuiKeyDown"><strong>_pyuiKeyDown</strong></a>(self, event)</dt></dl>
+
 <dl><dt><a name="RowHeaders-addChild"><strong>addChild</strong></a>(self, child, option<font color="#909090">=None</font>)</dt></dl>
 
 <dl><dt><a name="RowHeaders-destroy"><strong>destroy</strong></a>(self)</dt></dl>
@@ -436,8 +453,6 @@ Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:
 
 <dl><dt><a name="RowHeaders-nextTab"><strong>nextTab</strong></a>(self, step<font color="#909090">=1</font>)</dt></dl>
 
-<dl><dt><a name="RowHeaders-onKeyDown"><strong>onKeyDown</strong></a>(self, event)</dt></dl>
-
 <dl><dt><a name="RowHeaders-pack"><strong>pack</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="RowHeaders-resize"><strong>resize</strong></a>(self, w, h)</dt></dl>
@@ -445,7 +460,7 @@ Methods inherited from <a href="pyui.widgets.html#Panel">pyui.widgets.Panel</a>:
 <dl><dt><a name="RowHeaders-setLayout"><strong>setLayout</strong></a>(self, layout)</dt></dl>
 
 <hr>
-Methods inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Methods inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><a name="RowHeaders-__del__"><strong>__del__</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="RowHeaders-addPopup"><strong>addPopup</strong></a>(self, popup)</dt></dl>
@@ -490,7 +505,7 @@ if&nbsp;it&nbsp;is&nbsp;populated.</tt></dd></dl>
 <dl><dt><a name="RowHeaders-unregisterEvent"><strong>unregisterEvent</strong></a>(self, eventType)</dt><dd><tt>Remove&nbsp;handler&nbsp;for&nbsp;an&nbsp;event</tt></dd></dl>
 
 <hr>
-Data and non-method functions inherited from <a href="pyui.widgets.html#Base">pyui.widgets.Base</a>:<br>
+Data and non-method functions inherited from <a href="pyui.base.html#Base">pyui.base.Base</a>:<br>
 <dl><dt><strong>canTab</strong> = 0<dd><tt>int(x[,&nbsp;base])&nbsp;-&gt;&nbsp;integer<br>
 &nbsp;<br>
 Convert&nbsp;a&nbsp;string&nbsp;or&nbsp;number&nbsp;to&nbsp;an&nbsp;integer,&nbsp;if&nbsp;possible.&nbsp;&nbsp;A&nbsp;floating&nbsp;point<br>
@@ -498,6 +513,11 @@ argument&nbsp;will&nbsp;be&nbsp;truncated&nbsp;towards&nbsp;zero&nbsp;(this&nbsp
 representation&nbsp;of&nbsp;a&nbsp;floating&nbsp;point&nbsp;number!)&nbsp;&nbsp;When&nbsp;converting&nbsp;a&nbsp;string,&nbsp;use<br>
 the&nbsp;optional&nbsp;base.&nbsp;&nbsp;It&nbsp;is&nbsp;an&nbsp;error&nbsp;to&nbsp;supply&nbsp;a&nbsp;base&nbsp;when&nbsp;converting&nbsp;a<br>
 non-string.</tt></dl>
+
+<dl><dt><strong>widgetLabel</strong> = 'Base'<dd><tt>str(object)&nbsp;-&gt;&nbsp;string<br>
+&nbsp;<br>
+Return&nbsp;a&nbsp;nice&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;object.<br>
+If&nbsp;the&nbsp;argument&nbsp;is&nbsp;a&nbsp;string,&nbsp;the&nbsp;return&nbsp;value&nbsp;is&nbsp;the&nbsp;same&nbsp;object.</tt></dl>
 
 </td></tr></table></td></tr></table>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
