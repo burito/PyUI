@@ -177,7 +177,11 @@ class OpenGLGlut(openglBase.OpenGLBase):
             if self.textures.has_key(filename):
                 return
 
-        image = open(filename)
+        try:
+            image = open(filename)
+        except:
+            image = open(  pyui.__path__[0] + "/images/" + filename )
+            
         ix = image.size[0]
         iy = image.size[1]
         seq = 0

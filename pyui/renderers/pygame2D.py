@@ -148,9 +148,17 @@ class Pygame2D(pyui.core.RendererBase):
 
     def loadImage(self, filename, label = None):
         if label:
-            self.images[label] = pygame.image.load(filename)
+            realName = label
         else:
-            self.images[filename] = pygame.image.load(filename)            
+            realName = filename
+            
+        try:
+            img = pygame.image.load(filename)
+        except:
+            img = pygame.image.load(  pyui.__path__[0] + "/images/" + filename )
+
+        self.images[realName] = img
+
 
     def setClipping(self, rect = None):
         """set the clipping rectangle for the main screen. defaults to clearing the clipping rectangle."""
