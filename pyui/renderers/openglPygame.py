@@ -27,19 +27,22 @@ from pygame import locals
 
 from pyui.desktop import getDesktop, getTheme, getRenderer
 
+from OpenGL.GL import *
+
 class OpenGLPygame(openglBase.OpenGLBase):
     """ PyGame 3D wrapper for the GL renderer
     """
 
     name = "P3D"
     
-    def __init__(self, w, h, fullscreen):
-        openglBase.OpenGLBase.__init__(self, w, h, fullscreen)
+    def __init__(self, w, h, fullscreen, title):
+        openglBase.OpenGLBase.__init__(self, w, h, fullscreen, title)
         pygame.init()
+        pygame.display.set_caption(title)
         if fullscreen:
-            self.screen = pygame.display.set_mode((w, h), locals.OPENGLBLIT | locals.DOUBLEBUF | locals.FULLSCREEN)
+            self.screen = pygame.display.set_mode((w, h), locals.OPENGL | locals.DOUBLEBUF | locals.FULLSCREEN)
         else:
-            self.screen = pygame.display.set_mode((w, h), locals.OPENGLBLIT | locals.DOUBLEBUF)
+            self.screen = pygame.display.set_mode((w, h), locals.OPENGL | locals.DOUBLEBUF)
 
         pygame.key.set_mods(locals.KMOD_NONE)
         
@@ -52,9 +55,15 @@ class OpenGLPygame(openglBase.OpenGLBase):
             w = windows[i]
             self.setWindowOrigin(w.posX, w.posY)
             if w.dirty:
+                ## use display lists for deferred rendering...
                 w.drawWindow(self)
-            for command in w.drawCommands:
-                apply(command[0], command[1:])
+                w.displayList = glGenLists(1)
+                glNewList(w.displayList, GL_COMPILE_AND_EXECUTE)
+                for command in w.drawCommands:
+                    apply(command[0], command[1:])
+                glEndList()
+            else:
+                glCallList(w.displayList)
 
         self.teardown2D()
     

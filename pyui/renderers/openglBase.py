@@ -56,8 +56,8 @@ class OpenGLBase(Renderer3DBase):
 
     name = "GL"
     
-    def __init__(self, w, h, fullscreen):
-        Renderer3DBase.__init__(self, w, h, fullscreen)
+    def __init__(self, w, h, fullscreen, title):
+        Renderer3DBase.__init__(self, w, h, fullscreen, title)
         self.frame = 0
         self.last = time.time()
         self.width = w
@@ -263,12 +263,14 @@ class OpenGLBase(Renderer3DBase):
                 break
         if failed:
             raise IOError("All three encoders failed.")
+        
         #Create Texture
         texture = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, texture)   # 2d texture (x and y size)
         glPixelStorei(GL_UNPACK_ALIGNMENT,1)
         glTexImage2D(GL_TEXTURE_2D, 0, seq, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
 
+        print "Loaded: %s as %d" % ( filename, texture)
         if label:
             self.textures[label] = texture
         else:
@@ -367,7 +369,7 @@ class OpenGLBase(Renderer3DBase):
 
         glPushMatrix()
         glTranslate(rect[0] + (halfwidth), rect[1] + (halfheight), 0.0)
-        glRotate(rotationDegrees, 0.0, 0.0, 1.0)      # Rotate
+        #glRotate(rotationDegrees, 0.0, 0.0, 1.0)      # Rotate
 
         glBegin(GL_QUADS)
         glTexCoord2f(textureCoords[0][0], textureCoords[0][1])

@@ -24,7 +24,8 @@ class RendererBase:
     """
     name = "Base"
     
-    def __init__(self, w, h, fullscreen):
+    def __init__(self, w, h, fullscreen, title):
+        self.title = title
         self.w = w
         self.h = h
         self.fullscreen = fullscreen
@@ -59,7 +60,7 @@ class RendererBase:
     def addRect(self, rect):
         self.dirtyRects.append(rect)
 
-    def draw(self, windows, widgets):
+    def draw(self, windows):
         for w in windows:
             w.drawWindow(self)
 

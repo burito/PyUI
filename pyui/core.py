@@ -46,26 +46,24 @@ def init(w, h, renderer = "gl", fullscreen = 0, title=""):
     This will return a Desktop Object.
     (public)
     """
-
     global gDesktop, gRenderer
-    
     if renderer == "null":
-        gRenderer = RendererBase(w, h, fullscreen)
+        gRenderer = RendererBase(w, h, fullscreen, title)
 
     elif renderer == "null3d":
-        gRenderer = Renderer3DBase(w, h, fullscreen)
+        gRenderer = Renderer3DBase(w, h, fullscreen, title)
         
     elif renderer == "2d":
         from renderers.pygame2D import Pygame2D
-        gRenderer = Pygame2D(w, h, fullscreen)
+        gRenderer = Pygame2D(w, h, fullscreen, title)
         
     elif renderer == "gl":
         from renderers.openglGlut import OpenGLGlut
-        gRenderer = OpenGLGlut(w, h, fullscreen)
+        gRenderer = OpenGLGlut(w, h, fullscreen, title)
 
     elif renderer == "p3d":
         from renderers.openglPygame import OpenGLPygame
-        gRenderer = OpenGLPygame(w, h, fullscreen)
+        gRenderer = OpenGLPygame(w, h, fullscreen, title)
         
     elif renderer == "dx":
         from renderers import unseen
@@ -76,8 +74,8 @@ def init(w, h, renderer = "gl", fullscreen = 0, title=""):
         
     (w , h) = gRenderer.getScreenSize()
     # create the theme and desktop
-    theTheme = comic.ComicTheme(gRenderer)
-    #theTheme = future.FutureTheme(gRenderer)
+    #theTheme = comic.ComicTheme(gRenderer)
+    theTheme = future.FutureTheme(gRenderer)
     #theTheme = green.GreenTheme(gRenderer)
     #theTheme = win2k.Win2kTheme(gRenderer)
     

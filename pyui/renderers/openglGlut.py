@@ -35,8 +35,8 @@ class OpenGLGlut(openglBase.OpenGLBase):
 
     name = "GLUT"
     
-    def __init__(self, w, h, fullscreen):
-        openglBase.OpenGLBase.__init__(self, w, h, fullscreen)
+    def __init__(self, w, h, fullscreen, title):
+        openglBase.OpenGLBase.__init__(self, w, h, fullscreen, title)
         
         glutInit(sys.argv)
         glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)   #GLUT_ALPHA |        
