@@ -66,10 +66,16 @@ class OpenGLGlut(openglBase.OpenGLBase):
         for i in xrange(len(windows)-1, -1, -1):
             w = windows[i]
             self.setWindowOrigin(w.posX, w.posY)
+            ## use display lists for deferred rendering...
             if w.dirty:
                 w.drawWindow(self)
-            for command in w.drawCommands:
-                apply(command[0], command[1:])
+                w.displayList = glGenLists(1)
+                glNewList(w.displayList, GL_COMPILE_AND_EXECUTE)
+                for command in w.drawCommands:
+                    apply(command[0], command[1:])
+                glEndList()
+            else:
+                glCallList(w.displayList)
 
         self.teardown2D()
         glutSwapBuffers()    

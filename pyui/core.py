@@ -69,6 +69,10 @@ def init(w, h, renderer = "gl", fullscreen = 0, title=""):
         from renderers import unseen
         gRenderer = unseen.Unseen(w, h, fullscreen, title)
 
+    elif renderer == "nebula":
+        from renderers import nebula
+        gRenderer = nebula.RendererNeb(w, h, fullscreen)
+    
     else:
         raise "Unsupported renderer type", renderer
         
