@@ -72,6 +72,10 @@ class OpenGLGlut(openglBase.OpenGLBase):
             self.setWindowOrigin(w.posX, w.posY)
             ## use display lists for deferred rendering...
             if w.dirty:
+                if not hasattr(w, "displayList"):
+                    w.displayList = 0
+                if w.displayList:
+                    glDeleteLists(w.displayList,1)
                 w.displayList = glGenLists(1)
                 glNewList(w.displayList, GL_COMPILE_AND_EXECUTE)
                 w.drawWindow(self)                

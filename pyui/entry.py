@@ -75,7 +75,7 @@ class Entry(pyui.widgets.Base):
 
         font_width, font_heigth = renderer.getTextSize( ' ', self.font )
         grid_width, grid_height = ((w-6) / font_width), ((h-6) / font_heigth)
-
+        grid_width =(int)(grid_width*1.5)
         r, i = 0, 0
         selFrom, selTo = caretPos > selectPos and ( selectPos, caretPos ) or ( caretPos, selectPos )
 

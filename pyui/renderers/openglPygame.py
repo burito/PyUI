@@ -46,7 +46,7 @@ class OpenGLPygame(openglBase.OpenGLBase):
 
         pygame.key.set_mods(locals.KMOD_NONE)
         pygame.mouse.set_visible(0)
-        self.defaultFont = GLFont("times new roman", 12, 0)
+        #self.defaultFont = GLFont("times new roman", 12, 0)
 
     def draw(self, windows):
         apply(self.drawBackMethod, self.drawBackArgs)        
@@ -56,6 +56,10 @@ class OpenGLPygame(openglBase.OpenGLBase):
             self.setWindowOrigin(w.posX, w.posY)
             if w.dirty:
                 ## use display lists for deferred rendering...
+                if not hasattr(w, "displayList"):
+                    w.displayList = 0
+                if w.displayList:
+                    glDeleteLists(w.displayList,1)
                 w.displayList = glGenLists(1)
                 glNewList(w.displayList, GL_COMPILE_AND_EXECUTE)
                 w.drawWindow(self)                
@@ -199,12 +203,12 @@ class OpenGLPygame(openglBase.OpenGLBase):
 
     def drawText(self, text, pos, color, font = None):
         if not font:
-            font = self.defaultFont
+            font = getTheme().defaultFont
         font.drawText(text, pos, color)
 
     def getTextSize(self, text, font = None):
         if not font:
-            font = self.defaultFont
+            font = getTheme().defaultFont
         return font.getTextSize(text)
     
 class GLFont:
@@ -215,7 +219,7 @@ class GLFont:
         print "Creating font:", faceFile
         if fontRegistery.has_key(faceFile):
             faceFile = "c:/WINNT/Fonts/" + fontRegistery[faceFile]
-        self.font = pygame.font.Font(faceFile, size*1.6)
+        self.font = pygame.font.Font(faceFile, size*1.3)
             
         self.charInfo = []  # tuples of (width, height, texture coordinates) for each character
         self.textCache = {}
@@ -327,6 +331,7 @@ class GLFont:
         glDisable(GL_TEXTURE_2D)
 
     def cacheText(self, text):
+        ##TODO
         #glPushMatrix()
         #glTranslate(xPos,yPos,0)
         if not self.textCache.has_key(text):
@@ -351,7 +356,6 @@ class GLFont:
             (width, height, coords) = self.charInfo[ord(c)]
             w += width
             h = max(height,h)
-        #print "getTextSize: <%s> <%d,%d>" %(text, w, h)
         return (w,h/1.4)
         
 

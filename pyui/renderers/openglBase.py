@@ -128,13 +128,6 @@ class OpenGLBase(Renderer3DBase):
             103: pyui.locals.K_DOWN
             }
 
-##        if not USE_TRUETYPE_FONTS or sys.platform != "win32":
-##            print "Using GLUT fonts"
-##            self.createFont = self.createFont_OLD
-##            self.getTextSize = self.getTextSize_OLD
-##        else:
-##            print "Using True-Type fonts"
-
         self.drawBackMethod = self.clear
         
     ###############################################################################
@@ -154,10 +147,7 @@ class OpenGLBase(Renderer3DBase):
     def drawText(self, text, pos, color, font = None):
         """Draws the text on the screen in the specified position.
         """
-        if USE_TRUETYPE_FONTS:
-            self.do_text(text, (pos[0], pos[1]), color, font)
-        else:
-            self.do_text_OLD(text, (pos[0], pos[1]), color, font)            
+        self.do_text_OLD(text, (pos[0], pos[1]), color, font)            
         
     def drawGradient(self, rect, c1, c2, c3, c4):
         """Draws a gradient rectangle"""
@@ -392,49 +382,11 @@ class OpenGLBase(Renderer3DBase):
         glListBase(font)
         glCallLists(text)
 
-    def getTextSize(self, text, font = None):
-        """gets the width and height of a piece of text."""
-        if not font:
-            font = pyui.desktop.getTheme().defaultFont
-        (name, size, flags) = self.fonts[font]
-        return (size*len(text), (int)(size*1.4) )
 
     def createFont(self, fontName, fontSize, flags):
-        """Create a font. returns a handle. NOTE: This wont work on LINUX!!!!
-        """
-        handle = self.fontId
-        self.fontId += 256
-
-        props = {"name":fontName, "height":(int)(fontSize*1.2), "charset":0, "weight":1, "pitch and family":18}
-        if flags & pyui.locals.ITALIC:
-            props["italic"] = 1
-        if flags & pyui.locals.UNDERLINE:
-            props["underline"] = 1
-        if flags & pyui.locals.BOLD:
-            props["weight"] = 128
-            
-        pf = win32ui.CreateFont( props )
-        hdc = wglGetCurrentDC()
-        pdc = win32ui.CreateDCFromHandle(hdc)
-
-        
-        old = pdc.SelectObject(pf)
-        result = wglUseFontBitmaps(hdc , 0, 255, handle)
-        if not result:
-            print "ERROR!"
-        pdc.SelectObject(old)
-
-        self.fonts[handle] = (fontName, fontSize, flags)
-        del pf
-        del pdc
-
-        return handle
-
-
-    def createFont_OLD(self, fontName, fontSize, flags):
         pass
     
-    def getTextSize_OLD(self, text, font = None):
+    def getTextSize(self, text, font = None):
         """This text method uses the old GLUT rendering instead of True Type fonts.
         """
         if font == 'fixed':
