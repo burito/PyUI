@@ -183,7 +183,7 @@ class RendererBase:
         """
         pass
     
-    def setMouseCursor(self, cursor, offsetX, offsetY):
+    def setMouseCursor(self, cursor, offsetX=0, offsetY=0):
         self.mouseCursor = cursor
         self.mouseOffset = (offsetX, offsetY)
 

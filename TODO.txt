@@ -3,15 +3,13 @@ For Release 1.0:
 
 Per Widget clipping
 Specified renderer interface
-Customizable mouse cursors
 renderer plugin interface
-integrate a real font library
+make a menu that goes inside a Frame window 
 
 General:
 add functional clip stack
 add modes for event wait and event poll 
 add modes for "immediate" and "deferred" drawing
-make a menu that goes inside a Frame window 
 make tree widget themeable
 make a ticker-tape widget
 make a toolbar widget

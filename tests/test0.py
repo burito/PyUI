@@ -16,7 +16,6 @@ def run():
     w.addChild(b)
     w.pack()
 
-    pyui.desktop.getTheme().setArrowCursor()
     w.setBackImage("max.bmp")
     pyui.run()
 

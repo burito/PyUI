@@ -211,7 +211,7 @@ class Pygame2D(pyui.core.RendererBase):
             pygame.draw.line(self.screen, color, pos1, pos2)
         return 0
 
-    def setMouseCursor(self, cursor, offsetX, offsetY):
+    def setMouseCursor(self, cursor, offsetX=0, offsetY=0):
         self.mouseCursor = cursor
         self.mouseOffset = (offsetX, offsetY)
         self.loadImage(cursor)

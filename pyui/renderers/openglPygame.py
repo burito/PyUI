@@ -162,41 +162,6 @@ class OpenGLPygame(openglBase.OpenGLBase):
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
 
-
-
-    def drawText(self, text, pos, color, font=None):
-        t = self.ft.render(text)
-        ddata = t.img.tostring()
-        ix = t.width
-        iy = t.height
-        # Create Texture
-        texture = glGenTextures(1)
-        glBindTexture(GL_TEXTURE_2D, texture)   # 2d texture (x and y size)
-        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, 64, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, ddata)
-
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)    
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-
-
-        glColor4ub( 255, 255, 255, 255 )
-        glEnable(GL_TEXTURE_2D)
-        glBindTexture( GL_TEXTURE_2D, texture)
-
-        textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
-        
-        glBegin(GL_QUADS)
-        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
-        glVertex2i( pos[0], pos[1] )
-        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
-        glVertex2i( pos[0] + ix, pos[1])
-        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
-        glVertex2i( pos[0] + ix, pos[1] + iy)
-        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
-        glVertex2i( pos[0], pos[1] + iy)
-        glEnd()
-
     def createFont(self, face, size, flags):
         newFont = GLFont(face, size, flags)
         return newFont
@@ -328,7 +293,7 @@ class GLFont:
             glCallList( self.displayLists[ord(c)])
             glTranslate(width,0,0)
         glPopMatrix()                            
-        glDisable(GL_TEXTURE_2D)
+
 
     def cacheText(self, text):
         ##TODO

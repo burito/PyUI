@@ -208,6 +208,11 @@ class Desktop:
         """
         self.userHandlers[eventType] = handler
 
+    def unregisterHandler(self, eventType):
+        """Un-Register a user defined handler for an event.
+        (public)
+        """
+        del self.userHandlers[eventType]
 
     def readTimer(self):
         return self.renderer.readTimer()
@@ -246,8 +251,8 @@ class Desktop:
             
             # check for application handlers
             if self.userHandlers.has_key(event.type):
-                self.userHandlers[event.type](event)
-                return
+                if self.userHandlers[event.type](event) == 1:
+                    return
 
             # special event handlers
             if event.type == pyui.locals.KEYDOWN:
