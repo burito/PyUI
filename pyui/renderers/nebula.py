@@ -72,6 +72,9 @@ class RendererNeb(rendererBase.RendererBase):
 
         self.drawlist = []
         rendererBase.RendererBase.__init__(self, float(w), float(h),fullscreen)
+
+        self.drawBackMethod = self.clear
+        
     def shaderInit(self, shader):
         set('.setrenderpri', 0)
         set('.setnumstages', 1)
@@ -112,10 +115,17 @@ class RendererNeb(rendererBase.RendererBase):
     def mouse1up(self):
         pyui.desktop.getDesktop().postUserEvent(pyui.locals.LMOUSEBUTTONUP, self.mouseX, self.mouseY)
 
-    def draw(self, windows, dirtyWidgets=None):
+    def clear(self):
+        #TODO: make a clear method
+        pass
+    
+    def draw(self, windows):
+        apply(self.drawBackMethod, self.drawBackArgs)                
+
         import pdb
         #if __debug__: pdb.set_trace()
-        if self.callback: self.callback()
+        if self.callback:
+            self.callback()
         for w in windows:
             w.dirty =1
             self.windowPos = (w.posX, w.posY)

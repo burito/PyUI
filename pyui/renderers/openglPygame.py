@@ -48,19 +48,16 @@ class OpenGLPygame(openglBase.OpenGLBase):
         
 
     def draw(self, windows):
-        self.clear()
-        self.setup2D()
-                
+        apply(self.drawBackMethod, self.drawBackArgs)        
+        self.setup2D()                        
         for i in xrange(len(windows)-1, -1, -1):
             w = windows[i]
             self.setWindowOrigin(w.posX, w.posY)
             if w.dirty:
                 ## use display lists for deferred rendering...
-                w.drawWindow(self)
                 w.displayList = glGenLists(1)
                 glNewList(w.displayList, GL_COMPILE_AND_EXECUTE)
-                for command in w.drawCommands:
-                    apply(command[0], command[1:])
+                w.drawWindow(self)                
                 glEndList()
             else:
                 glCallList(w.displayList)

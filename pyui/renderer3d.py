@@ -17,7 +17,10 @@
 from pyui.rendererBase import RendererBase
 
 class Renderer3DBase(RendererBase):
-    
+
+    def __init__(self, w, h, fullscreen, title):
+        RendererBase.__init__(self, w, h, fullscreen, title)
+        
     #####################################
     ##  3D interface
     ##

@@ -1601,16 +1601,10 @@ class Frame(Window):
         Window.__init__(self, x, y, w, h, topmost)
         self.setTitle(self.title)
         
-        if getRenderer().nativeFrames:
-            self.panelOffsetLeft = 0
-            self.panelOffsetTop = 0
-            self.panelOffsetRight = 0
-            self.panelOffsetBottom = 0            
-        else:
-            self.panelOffsetLeft = self.theme.getFrameBorderLeft()
-            self.panelOffsetTop = self.theme.getFrameBorderTop()
-            self.panelOffsetRight = self.theme.getFrameBorderRight()
-            self.panelOffsetBottom = self.theme.getFrameBorderBottom()            
+        self.panelOffsetLeft = self.theme.getFrameBorderLeft()
+        self.panelOffsetTop = self.theme.getFrameBorderTop()
+        self.panelOffsetRight = self.theme.getFrameBorderRight()
+        self.panelOffsetBottom = self.theme.getFrameBorderBottom()            
             
         self._panel.moveto(self.panelOffsetLeft, self.panelOffsetTop)
         w += self.panelOffsetLeft + self.panelOffsetRight

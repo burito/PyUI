@@ -81,13 +81,24 @@ class Pygame2D(pyui.core.RendererBase):
         self.windows = {}
         self.images = {}
 
+        self.drawBackMethod = self.clear
+        
     def doesDirtyRects(self):
         return 1
 
 
-    def draw(self, windows):
-        #self.screen.set_clip( (0,0,self.w, self.h))
+    def clear(self):
         self.screen.fill((0,0,0, 255))
+        
+    def draw(self, windows):
+        # draw back if required
+        if self.drawBackMethod:
+            self.windowPos = (0,0)
+            self.drawList = []
+            apply(self.drawBackMethod, self.drawBackArgs)
+            for command in self.drawList:
+                self.doDrawCommand(command)
+            self.drawList = []
             
         for i in xrange(len(windows)-1, -1, -1):
             w = windows[i]

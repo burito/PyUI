@@ -37,7 +37,8 @@ class RendererBase:
         self.done = 0
         self.frame = 0
         self.last = 0
-        self.nativeFrames = 0  # set this if your renderer draws its own window frames.
+        self.drawBackMethod = None
+        self.drawBackArgs = []
 
     def getScreenSize(self):
         return (self.w, self.h)
@@ -95,6 +96,12 @@ class RendererBase:
             else:
                 getDesktop().draw()
                 getDesktop().update()
+
+    def setBackMethod(self, drawBackMethod, *args):
+        """Set the method used to draw the background.
+        """
+        self.drawBackMethod = drawBackMethod
+        self.drawBackArgs = args
         
     ####### draw primative functions ######
     
@@ -162,4 +169,14 @@ class RendererBase:
 
     def createFont(self, face, size, flags):
         return 1
+
+    def setup2D(self):
+        """must be called in background drawing method to do 2D drawing.
+        """
+        pass
+
+    def teardown2D(self):
+        """must be called in background drawing method to end 2D drawing.
+        """
+        pass
     

@@ -61,6 +61,8 @@ class OpenGLBase(Renderer3DBase):
     """ OpenGL pyui renderer functionality. This is incomplete - it requires a wrapper of
     either GLUT or PyGame which are implemented as seperate renderers that derive from this
     renderer. All common functionality lives here though.
+
+    #TODO:  fix clipping
     """
 
     name = "GL"
@@ -134,48 +136,149 @@ class OpenGLBase(Renderer3DBase):
             print "Using GLUT fonts"
             self.createFont = self.createFont_OLD
             self.getTextSize = self.getTextSize_OLD
-            self.do_text = self.do_text_OLD
         else:
             print "Using True-Type fonts"
-            
+
+        self.drawBackMethod = self.clear
+        
     ###############################################################################
     ### Draw Primatives functions
     ###############################################################################
 
     def drawRect(self, color, rect):
-        """Fills a rectangle with the specified color."""        
-        self.drawList.append( (self.do_rect, rect, color) )
+        """Fills a rectangle with the specified color."""
+        glBegin(GL_QUADS)
+        glColor4ub( color[0], color[1], color[2], color[3] )
+        glVertex2i(rect[0], rect[1])
+        glVertex2i(rect[0] + rect[2], rect[1])
+        glVertex2i(rect[0] + rect[2], rect[1] + rect[3])
+        glVertex2i(rect[0], rect[1] + rect[3])
+        glEnd()
 
     def drawText(self, text, pos, color, font = None):
-        """Draws the text on the screen in the specified position"""
-        self.drawList.append( (self.do_text, text, (pos[0], pos[1]), color, font) )
+        """Draws the text on the screen in the specified position.
+        """
+        if USE_TRUETYPE_FONTS:
+            self.do_text(text, (pos[0], pos[1]), color, font)
+        else:
+            self.do_text_OLD(text, (pos[0], pos[1]), color, font)            
         
     def drawGradient(self, rect, c1, c2, c3, c4):
         """Draws a gradient rectangle"""
-        self.drawList.append( (self.do_gradient, rect, c1, c2, c3, c4) )
-
+        glBegin(GL_QUADS)
+        glColor4ub( c1[0], c1[1], c1[2], c1[3] )
+        glVertex2i(rect[0], rect[1])                        # top left
+        glColor4ub( c2[0], c2[1], c2[2], c2[3] )        
+        glVertex2i(rect[0] + rect[2], rect[1])              # top right
+        glColor4ub( c4[0], c4[1], c4[2], c4[3] )
+        glVertex2i(rect[0] + rect[2], rect[1] + rect[3])    # bottom right
+        glColor4ub( c3[0], c3[1], c3[2], c3[3] )
+        glVertex2i(rect[0], rect[1] + rect[3])              # bottom left
+        glEnd()
+        
     def drawLine(self, x1, y1, x2, y2, color):
         """Draws a line"""
-        w = x2 - x1
-        h = y2 - y1
-        self.drawList.append( (self.do_line, x1, y1, w, h, color) )
+        glBegin(GL_LINES)
+        glColor4ub( color[0], color[1], color[2], color[3] )
+        glVertex2i(x1, y1)
+        glVertex2i(x2, y2)
+        glEnd()
         
     def drawImage(self, rect, filename, pieceRect = None):
         """Draws an image at a position."""
-        self.drawList.append( (self.do_image, rect, filename, 0, 0) )
+        textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
+
+        if not self.textures.has_key(filename):
+            self.loadTexture(filename)
+        texture = self.textures[filename]
+
+        glColor4ub( 255, 255, 255, 255 )
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture( GL_TEXTURE_2D, texture)
+
+        glBegin(GL_QUADS)
+        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
+        glVertex2i( rect[0], rect[1])
+        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
+        glVertex2i( rect[0] + rect[2], rect[1])
+        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
+        glVertex2i( rect[0] + rect[2], rect[1] + rect[3])
+        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
+        glVertex2i( rect[0], rect[1] + rect[3])
+        glEnd()
+
+        glDisable(GL_TEXTURE_2D)
 
     def drawImageRotated(self, rect, filename, rotDegrees=0, textureEffect=0):
         """Draws an image at a position."""
-        self.drawList.append( (self.do_image, rect, filename, rotDegrees, textureEffect) )
 
+        if textureEffect == TEXTURE_ROTATE_90:
+            textureCoords = [[0.0,0.0],[0.0,1.0],[1.0,1.0],[1.0,0.0]]
+        elif textureEffect == TEXTURE_ROTATE_180:
+            textureCoords = [[1.0,0.0],[0.0,0.0],[0.0,1.0],[1.0,1.0]]
+        elif textureEffect == TEXTURE_ROTATE_270:       
+            textureCoords = [[1.0,1.0],[1.0,0.0],[0.0,0.0],[0.0,1.0]]
+        elif textureEffect == TEXTURE_MIRROR_H:
+            textureCoords = [[1.0,1.0],[0.0,1.0],[0.0,0.0],[1.0,0.0]]
+        elif textureEffect == TEXTURE_MIRROR_V:
+            textureCoords = [[0.0,0.0],[1.0,0.0],[1.0,1.0],[0.0,1.0]]
+        else:
+            textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
+
+        if not self.textures.has_key(filename):
+            self.loadTexture(filename)
+
+        texture = self.textures[filename]
+
+        glColor4ub( 255, 255, 255, 255 )
+        glEnable(GL_TEXTURE_2D)
+        glBindTexture( GL_TEXTURE_2D, texture)
+
+        halfwidth = rect[2] / 2
+        halfheight = rect[3] / 2
+
+        glPushMatrix()
+        glTranslate(rect[0] + (halfwidth), rect[1] + (halfheight), 0.0)
+        glRotate(rotationDegrees, 0.0, 0.0, 1.0)      # Rotate
+
+        glBegin(GL_QUADS)
+        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
+        glVertex2i( -halfwidth, -halfheight)        
+        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
+        glVertex2i( halfwidth, -halfheight)
+        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
+        glVertex2i( halfwidth, halfheight)
+        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
+        glVertex2i( -halfwidth, halfheight)
+
+        glEnd()
+        glPopMatrix()
+
+        glDisable(GL_TEXTURE_2D)
+        
     def loadImage(self, filename, label = None):
         if not filename:
             return
         self.loadTexture(filename, label)
 
     def setClipping(self, rect = None):
-        """set the clipping rectangle for the main screen. defaults to clearing the clipping rectangle."""
-        self.drawList.append( (self.do_clip, rect) )
+        """set the clipping rectangle for the main screen. defaults to clearing the clipping rectangle.
+        NOTE: isn't working..."""
+        return
+        if rect:
+            offsets = glGetIntegerv( GL_MODELVIEW_MATRIX )
+            corrected = (offsets[3][0] + rect[0], getDesktop().height - offsets[3][1] - rect[3] - rect[1], rect[2], rect[3])
+            self.clip_stack.append( corrected )
+        elif len( self.clip_stack ):
+            self.clip_stack = self.clip_stack[0:-1]
+
+        if len( self.clip_stack ) and self.clip_stack[-1][2] > 0 and self.clip_stack[-1][3] > 0:
+            glEnable(GL_SCISSOR_TEST)
+            apply( glScissor, self.clip_stack[-1] )
+        else:
+            glDisable(GL_SCISSOR_TEST)
+        pass
+        
 
     ###############################################################################
     ### methods to be implemented by GL wrappers
@@ -312,22 +415,6 @@ class OpenGLBase(Renderer3DBase):
     ##
     ######################################################
 
-    def do_rect(self, rect, color):
-        glBegin(GL_QUADS)
-        glColor4ub( color[0], color[1], color[2], color[3] )
-        glVertex2i(rect[0], rect[1])
-        glVertex2i(rect[0] + rect[2], rect[1])
-        glVertex2i(rect[0] + rect[2], rect[1] + rect[3])
-        glVertex2i(rect[0], rect[1] + rect[3])
-        glEnd()
-
-    def do_line(self,  x1, y1, w, h, color):
-        glBegin(GL_LINES)
-        glColor4ub( color[0], color[1], color[2], color[3] )
-        glVertex2i(x1, y1)
-        glVertex2i(x1 + w, y1 + h)
-        glEnd()
-
     def do_text(self, text, position, color, font ):
         """Draw some text to the screen using a bitmapped font"""
         #print "Drawing:", text
@@ -344,85 +431,6 @@ class OpenGLBase(Renderer3DBase):
         glRasterPos2i(position[0], position[1] + size*1.2)
         glListBase(font)
         glCallLists(text)
-
-    def do_gradient(self, rect, c1, c2, c3, c4 ):
-        glBegin(GL_QUADS)
-        glColor4ub( c1[0], c1[1], c1[2], c1[3] )
-        glVertex2i(rect[0], rect[1])                        # top left
-        glColor4ub( c2[0], c2[1], c2[2], c2[3] )        
-        glVertex2i(rect[0] + rect[2], rect[1])              # top right
-        glColor4ub( c4[0], c4[1], c4[2], c4[3] )
-        glVertex2i(rect[0] + rect[2], rect[1] + rect[3])    # bottom right
-        glColor4ub( c3[0], c3[1], c3[2], c3[3] )
-        glVertex2i(rect[0], rect[1] + rect[3])              # bottom left
-        glEnd()
-
-    def do_image(self, rect, filename, rotationDegrees, textureEffect=0):
-
-        if textureEffect == TEXTURE_ROTATE_90:
-            textureCoords = [[0.0,0.0],[0.0,1.0],[1.0,1.0],[1.0,0.0]]
-        elif textureEffect == TEXTURE_ROTATE_180:
-            textureCoords = [[1.0,0.0],[0.0,0.0],[0.0,1.0],[1.0,1.0]]
-        elif textureEffect == TEXTURE_ROTATE_270:       
-            textureCoords = [[1.0,1.0],[1.0,0.0],[0.0,0.0],[0.0,1.0]]
-        elif textureEffect == TEXTURE_MIRROR_H:
-            textureCoords = [[1.0,1.0],[0.0,1.0],[0.0,0.0],[1.0,0.0]]
-        elif textureEffect == TEXTURE_MIRROR_V:
-            textureCoords = [[0.0,0.0],[1.0,0.0],[1.0,1.0],[0.0,1.0]]
-        else:
-            textureCoords = [[0.0,1.0],[1.0,1.0],[1.0,0.0],[0.0,0.0]]
-
-        if not self.textures.has_key(filename):
-            self.loadTexture(filename)
-
-        texture = self.textures[filename]
-
-        glColor4ub( 255, 255, 255, 255 )
-        glEnable(GL_TEXTURE_2D)
-        glBindTexture( GL_TEXTURE_2D, texture)
-
-        halfwidth = rect[2] / 2
-        halfheight = rect[3] / 2
-
-        glPushMatrix()
-        glTranslate(rect[0] + (halfwidth), rect[1] + (halfheight), 0.0)
-        #glRotate(rotationDegrees, 0.0, 0.0, 1.0)      # Rotate
-
-        glBegin(GL_QUADS)
-        glTexCoord2f(textureCoords[0][0], textureCoords[0][1])
-        glVertex2i( -halfwidth, -halfheight)        
-        glTexCoord2f(textureCoords[1][0], textureCoords[1][1])
-        glVertex2i( halfwidth, -halfheight)
-        glTexCoord2f(textureCoords[2][0], textureCoords[2][1])
-        glVertex2i( halfwidth, halfheight)
-        glTexCoord2f(textureCoords[3][0], textureCoords[3][1])
-        glVertex2i( -halfwidth, halfheight)
-
-        glEnd()
-        glPopMatrix()
-
-        glDisable(GL_TEXTURE_2D)
-
-        self.clip_stack = []
-
-    def do_clip(self, rect):
-        """NOTE: code for a clipping stack.. doesnt appear to be working..
-        """
-        return
-        if rect:
-            offsets = glGetIntegerv( GL_MODELVIEW_MATRIX )
-            corrected = (offsets[3][0] + rect[0], getDesktop().height - offsets[3][1] - rect[3] - rect[1], rect[2], rect[3])
-            self.clip_stack.append( corrected )
-        elif len( self.clip_stack ):
-            self.clip_stack = self.clip_stack[0:-1]
-
-        if len( self.clip_stack ) and self.clip_stack[-1][2] > 0 and self.clip_stack[-1][3] > 0:
-            glEnable(GL_SCISSOR_TEST)
-            apply( glScissor, self.clip_stack[-1] )
-        else:
-            glDisable(GL_SCISSOR_TEST)
-        pass
-
 
     def getTextSize(self, text, font = None):
         """gets the width and height of a piece of text."""

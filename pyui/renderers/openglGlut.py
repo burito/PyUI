@@ -1,4 +1,3 @@
-# PyUI
 # Copyright (C) 2001-2002 Sean C. Riley
 # 
 # This library is free software; you can redistribute it and/or
@@ -46,7 +45,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
         else:
             glutInitWindowSize(w,h)
             glutInitWindowPosition(0,0)
-            self.windowID = glutCreateWindow('PyUI GL Window')
+            self.windowID = glutCreateWindow(title)
         glutSetWindow(self.windowID)
         
         glutReshapeFunc(self.ReSizeGLScene)
@@ -60,7 +59,7 @@ class OpenGLGlut(openglBase.OpenGLBase):
                 
         
     def draw(self, windows):
-        self.clear()
+        apply(self.drawBackMethod, self.drawBackArgs)                
         self.setup2D()
 
         for i in xrange(len(windows)-1, -1, -1):
@@ -68,11 +67,9 @@ class OpenGLGlut(openglBase.OpenGLBase):
             self.setWindowOrigin(w.posX, w.posY)
             ## use display lists for deferred rendering...
             if w.dirty:
-                w.drawWindow(self)
                 w.displayList = glGenLists(1)
                 glNewList(w.displayList, GL_COMPILE_AND_EXECUTE)
-                for command in w.drawCommands:
-                    apply(command[0], command[1:])
+                w.drawWindow(self)                
                 glEndList()
             else:
                 glCallList(w.displayList)

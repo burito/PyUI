@@ -11,7 +11,7 @@ class app:
         self.grid = pyui.widgets.Frame(10, 10, 400, 400, "grid")
         self.grid.setLayout( pyui.layouts.GridLayoutManager(3, 4) )
         #self.grid.setBackImage("max.bmp")
-        print self.grid
+        #print self.grid
         
         self.b3 = pyui.widgets.Button("a long name", self.onButton)
         self.b4 = pyui.widgets.ImageButton("max.bmp", self.onButton)
@@ -44,8 +44,26 @@ class app:
 
         newFrame = pyui.widgets.Frame(0,505, 200,100, "close me")
 
+        pyui.desktop.getRenderer().setBackMethod(self.drawBack)
+        
+    def drawBack(self):
+        """Called every frame to draw the background.
+        """
+        renderer = pyui.desktop.getRenderer()
+        renderer.setup2D()
+        
+        renderer.clear()
+        for x in range(0,10):
+            renderer.drawLine(x*80,1,x*80, 600, (0,255,255,255) )
+
+        renderer.drawRect( pyui.colors.red, (100,100,600,400) )            
+
+        renderer.teardown2D()
+        
+        
     def onSlide(self, value):
         print "slider says:", value
+        
     def onButton(self, button):
         print "Button:", button
 
