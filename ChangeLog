@@ -1,5 +1,16 @@
 pyui release notes:
 
+Version 0.95: January 30th 2003
+-------------------------------
+removed PIL dependency in Py3D renderer. uses pygame to load images
+use display lists for optimization in openGL renderers
+added distutils install script
+added hook for drawing background window
+added openGL 3D example
+moved "boat" and "database" to sandbox
+experimental true type font support in GL renderers
+experimental Nebula renderer
+	
 Version 0.93: October 10th 2002
 -------------------------------
 added "sheet" class for optimized tables
