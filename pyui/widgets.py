@@ -1615,6 +1615,7 @@ class Frame(Window):
         self.startX = 0
         self.startY = 0
         self.resizingCursor=0
+        self.movingCursor=0
         self.backImage=None
 
         self.menuBar = None
@@ -1672,17 +1673,29 @@ class Frame(Window):
             self.resize( self.width + mouseX - self.startX, self.height + mouseY - self.startY)
             (self.startX, self.startY) = (mouseX, mouseY)
             return 1
-        if event.pos[0] > self.posX + self.innerWidth and event.pos[1] > self.posY + self.innerHeight and not self.resizingCursor:
+
+        # set the proper cursor
+        if event.pos[0] > self.posX + self.innerWidth and event.pos[1] > self.posY + self.innerHeight:
             self.resizingCursor=1
             self.theme.setResizeCursor()
         elif self.resizingCursor:
             self.resizingCursor=0
-            self.theme.setArrowCursor()            
-        
+            self.theme.setArrowCursor()
+            
+        if event.pos[0] < self.posX +self.width- 32 and event.pos[1] < self.posY + self.theme.getFrameBorderTop()-8:
+            self.movingCursor = 1
+            self.theme.setMovingCursor()
+        elif self.movingCursor:
+            self.movingCursor = 0
+            self.theme.setArrowCursor()
+            
         if not self.hit(event.pos):
             if self.resizingCursor and not self.resizing:
                 self.resizingCursor=0
-                self.theme.setArrowCursor()                            
+                self.theme.setArrowCursor()
+            if self.movingCursor and not self.moving:
+                self.movingCursor=0
+                self.theme.setArrowCursor()
             return 0
         else:
             return 1
@@ -1743,6 +1756,7 @@ class Frame(Window):
 
     def _pyuiCloseButton(self):
         print "Destroying window", self
+        self.theme.setArrowCursor()        
         self.destroy()
         return 1            
         

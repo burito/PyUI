@@ -87,16 +87,19 @@ class ThemeBase:
 
         ### mouse cursor functions
     def setArrowCursor(self):
-        pass
+        apply(self.renderer.setMouseCursor, pyui.locals.CURSOR_POINTER)
 
     def setResizeCursor(self):
-        pass
+        apply(self.renderer.setMouseCursor, pyui.locals.CURSOR_RESIZE)
 
     def setButtonCursor(self):
-        pass
+        apply(self.renderer.setMouseCursor, pyui.locals.CURSOR_HAND)
 
     def setWaitCursor(self):
-        pass
+        apply(self.renderer.setMouseCursor, pyui.locals.CURSOR_WAIT)
+
+    def setMovingCursor(self):
+        apply(self.renderer.setMouseCursor, pyui.locals.CURSOR_DRAG)
 
     #####################################################################
     ###

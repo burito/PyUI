@@ -83,7 +83,6 @@ def run():
     import testopt
     opts = testopt.parseCommandLine(800, 600)
     pyui.init(*opts)
-    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)    
     #pyui.core.setTheme(pyui.greenTheme.greenTheme(pyui.core.gRenderer, 640, 480))
     g = app()
 

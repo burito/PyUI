@@ -97,6 +97,8 @@ class Desktop:
         # setup singleton desktop
         Desktop.theDesktop = self
 
+        self.theme.setArrowCursor()
+
 
     def quit(self):
         """Called to destroy all the windows on shutdown.

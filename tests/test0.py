@@ -16,8 +16,8 @@ def run():
     w.addChild(b)
     w.pack()
 
-    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)
-    #w.setBackImage("max.bmp")
+    pyui.desktop.getTheme().setArrowCursor()
+    w.setBackImage("max.bmp")
     pyui.run()
 
     print "done"

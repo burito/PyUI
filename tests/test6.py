@@ -68,7 +68,6 @@ def run():
     import testopt
     opts = testopt.parseCommandLine(800, 600)
     pyui.init(*opts)
-    pyui.desktop.getRenderer().setMouseCursor("cursor.png", 11,7)    
     g = game()
     pyui.run()
 

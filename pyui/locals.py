@@ -89,6 +89,13 @@ CONTROLLER_REACH            = 2
 CONTROLLER_ANIMATION        = 3
 CONTROLLER_2DWINDOW         = 4
 
+# cursors
+CURSOR_POINTER    = ("cursor_pointer.png", 11, 7)
+CURSOR_HAND       = ("cursor_hand.png", 11, 7)
+CURSOR_DRAG       = ("cursor_drag.png", 11, 7)
+CURSOR_RESIZE     = ("cursor_resize.png", 15, 15)
+CURSOR_TEXT       = ("cursor_text.png", 11, 7)
+CURSOR_WAIT       = ("cursor_wait.png", 11, 7)
 
 # Key codes - may be populated by a renderer
 K_BACKSPACE = 0x08
