@@ -31,7 +31,7 @@ from desktop import Desktop, readTimer
 
 gRenderer = None
 gDesktop = None
-gVersion = 0.95
+gVersion = 0.96
 
 #########################################################
 # Section: external/public functions

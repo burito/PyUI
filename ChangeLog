@@ -1,5 +1,15 @@
 pyui release notes:
 
+Version 0.96: April 12th 2003
+-----------------------------
+reduced the number of default imports in pyui.core
+added callback handler to console dialog
+added menus inside frames
+removed unneeded imports in OpenGL renderers
+support for mouse cursors
+default mouse cursors for buttons, moving and resizing
+fixed leaking memory in GL drawing
+	
 Version 0.95: January 30th 2003
 -------------------------------
 removed PIL dependency in Py3D renderer. uses pygame to load images
