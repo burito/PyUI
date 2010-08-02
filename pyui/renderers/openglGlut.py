@@ -231,8 +231,8 @@ class OpenGLGlut(openglBase.OpenGLBase):
         glLoadIdentity()
         gluPerspective(45.0, float(Width)/float(Height), 0.1, 100.0)
         glMatrixMode(GL_MODELVIEW)
-        self.width = Width
-        self.height = Height
+        getDesktop().width = self.width = Width
+        getDesktop().height = self.height = Height
 
     def getTextSize(self, text, font = None):
         """This text method uses the old GLUT rendering instead of True Type fonts.
