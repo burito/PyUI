@@ -54,7 +54,7 @@ class ThemeBase:
         # setup widget offsets
         self.frameBorderLeft = 4
         self.frameBorderRight = 4
-        self.frameBorderTop = fontSize *2.2
+        self.frameBorderTop = int(fontSize *2.2)
         self.frameBorderBottom = 4
         self.tabsHeight = int(fontSize * 1.3)
         self.scrollerSize = 10
